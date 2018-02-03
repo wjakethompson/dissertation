@@ -13,8 +13,6 @@ repos:
 pandoc_version: 1.17.2
 
 before_install:
-- mkdir ~/.R
-- cp Makevars ~/.R
 - npm install netlify-cli -g
 
 script:
