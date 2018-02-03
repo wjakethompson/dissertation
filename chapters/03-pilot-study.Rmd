@@ -1,0 +1,347 @@
+# Pilot Study {#pilot}
+
+In order to better assess the impact of the order of model reduction, a pilot study was conducted on the Diagnosing Teachers' Multiplicative Reasoning (DTMR) assessment data, as described in @bradshaw_diagnosing_2014. In this study, the DTMR data set was analyzed using a variety of model reduction processes to determine if the selected process has an impact on the resulting model parameters. Thus, the pilot study was designed to answer the first research question defined in section \@ref(lit-cur-study). This is an important first step as without evidence that the model reduction process has an impact on the results, there would be little motivation for a more thorough analysis via simulation.
+
+## Method {#pilot-method}
+
+### DTMR data
+
+The DTMR assessment consists of 28 dichotomously scored items that together measure 4 attributes related to educators' understanding of multiplicative reasoning [@bradshaw_diagnosing_2014]:
+
+1. Referent Units (RU): recognizing which whole the fraction refers to,
+2. Partitioning and Iterating (PI): splitting a whole into equal pieces repeatedly to achieve larger fractions,
+3. Appropriateness (APP): determining the correct mathematical operation from a problem statement, and
+4. Multiplicative Comparison (MC): evaluating the ratio of one value to another.
+
+Of the 28 items, Referent Units is measured by 16, Partitioning and Iterating by 10, Appropriateness by 6, and Multiplicative Comparison by 10. This totals adds to more than 28 because several items measure more than one attribute. Specifically, there are 14 items measuring only 1 attribute and 14 that measure 2 attributes. The complete saturated Q-matrix for the DTMR assessment can be see in Table \@ref(tab:dtmr-qmatrix). For example, item 1 measures only the Referent Units attribute, whereas item 5 measures both the Referent Units and Multiplicative Comparison attributes.
+
+```{r dtmr-qmatrix, cache = TRUE}
+read_csv("data/dtmr-qmatrix.csv", col_types = cols(.default = col_number(),
+  Item = col_character())) %>%
+  rowid_to_column() %>%
+  rename(Item = rowid, `Item Name` = Item) %>%
+  knitr::kable(align = "c", booktabs = TRUE, caption = "DTMR Q-matrix",
+    format = knit_format) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+```{r dtmr-data, cache = TRUE}
+dtmr_data <- read_csv("data/dtmr-data.csv", na = ".", col_names = c("id",
+  paste0("X", seq_len(28)), "MCred", "ExpGd", "GdCert79", "GdCert78"),
+  col_types = cols(.default = col_integer()))
+```
+
+In total `r nrow(dtmr_data)` math teachers took the assessment. @bradshaw_diagnosing_2014 reported that sample demographics were consistent with a representative national sample. For a complete description of the sample characteristics and data collection process, see the original description of the DTMR in @bradshaw_diagnosing_2014.
+
+### Model estimation
+
+In order to assess the impact of various model reduction processes, the LCDM was estimated for the DTRM using five different reduction methods:
+
+1. Simultaneous reduction: after estimating the fully saturated model, all non-significant parameters from both the measurement and the structural models are removed and the model is re-estimated,
+2. Measurement reduction: after estimating the fully saturated model, all non-significant parameters from the measurement model only are removed and the model is re-estimated,
+3. Structural reduction: after estimating the fully saturated model, all non-significant parameters from the structural model only are removed and the model is re-estimated, 
+4. Measurement-Structural reduction: after estimating the measurement reduction model, all non-significant parameters from the structural model only are removed and the model is re-estimated, and
+5. Structural-Measurement reduction: after estimating the structural reduction model, all non-significant parameters from the measurement model only are removed and the model is re-estimated.
+
+The different ordering processes for model reduction, and their relationships to each other, are represented visually in Figure \@ref(fig:red-process). The significance of each parameter was determined by the p-value derived from the Wald test provided by *Mplus*. This test provides a p-value for the null hypothesis that the parameter is equal to zero. Parameters with a p-value greater than 0.05 were determined to be non-significant, and therefore removed at the corresponding stage of model reduction. It should be noted that in the model reduction processes outlined, a constraint was put in place to prevent the removal of item intercepts. An intercept must be defined in order to ensure that all respondents have an estimated probability of a correct response. Thus, item intercepts remained in the model, regardless of their significance.
+
+```{r red-process, fig.cap = "Flowchart of model reduction processes", out.width="90%", fig.pos = "h"}
+point_data <- data_frame(
+  x = c(1, 3, 3, 3, 5, 5),
+  y = c(5, 7, 5, 3, 5, 3),
+  label = c("Fully\nSaturated", "Simultaneous\nReduction",
+    "Measurement\nReduction", "Structural\nReduction",
+    "Measurement-\nStrucutral\nReduction",
+    "Structural-\nMeasurement\nReduction")
+)
+
+p <- ggplot() +
+  geom_text(data = point_data, aes(x = x, y = y, label = label),
+    size = 3) +
+  geom_point(data = point_data, aes(x = x, y = y), size = 35, alpha = 0.2) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 5, yend = 7),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 5, yend = 5),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 5, yend = 3),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 3.5, xend = 4.5, y = 5, yend = 5),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 3.5, xend = 4.5, y = 3, yend = 3),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  coord_cartesian(xlim = c(0.5, 5.5), ylim = c(2, 8)) +
+  theme_void()
+
+ggsave(filename = "reduction-flow.pdf", plot = p, path = "figure", width = 7,
+  height = 5, units = "in", dpi = "retina")
+ggsave(filename = "reduction-flow.png", plot = p, path = "figure", width = 7,
+  height = 5, units = "in", dpi = "retina")
+
+if (knitr:::is_latex_output()) {
+  knitr::include_graphics("figure/reduction-flow.pdf")
+} else {
+  knitr::include_graphics("figure/reduction-flow.png")
+}
+```
+
+
+In practical terms, a non-significant intercept means that the log-odds of a respondent who hasn't mastered any of the required attributes is not significantly different from 0 (this corresponds to a probability of 0.5). Thus, these cases may represent easier, or highly guessable items, where non-masters of the required traits still have a relatively high probability of success. In contrast, non-significant main effects and interactions represent instances where the increase in the log-odds for masters of the given attribute (or combination of attributes in the case of interactions) is not significantly different from 0. Thus, after removing these parameters, the affected respondents would have the same probability of providing a correct response as respondents who had not mastered the required attributes. In the extreme case where all parameters for an item are removed except for the intercept, all respondents would have the same probability of success, regardless of their profile of attribute mastery.
+
+All analyses for the pilot study were conducted in *Mplus* version 7.4 [@muthen_mplus_1998] via the **MplusAutomation** package [@R-MplusAutomation] in *R* version `r getRversion()` [@R-base]. *Mplus* code for the estimation of the LCDM was generated in *R* using custom scripts based on the work of @rupp_files_2012 and @templin_obtaining_2013.
+
+## Results
+
+The final estimate and associated standard error for each parameter from each of the model reduction processes are presented in their own tables in order to easily compare across model reduction processes. Table \@ref(tab:int-results), Table \@ref(tab:m1-results), Table \@ref(tab:m2-results), Table \@ref(tab:m3-results), Table \@ref(tab:m4-results), Table \@ref(tab:i12-results), Table \@ref(tab:i14-results), Table \@ref(tab:i24-results), and Table \@ref(tab:i34-results) show the results of the measurement model parameters, and Table \@ref(tab:strc-results) shows the results of the structural model parameters.
+
+```{r dtmr-results}
+library(forcats)
+dtmr_results <- readRDS("data/dtmr-results.rds")
+
+print_results <- dtmr_results %>%
+  filter(param_type == "meas", reduction != "satr") %>%
+  mutate(
+    print_val = paste0(sprintf("%.2f", est), " (", sprintf("%.2f", se), ")")
+  ) %>%
+  select(reduction, Item = item, param, print_val) %>%
+  mutate(
+    reduction = factor(reduction, levels = c("siml", "meas", "strc",
+      "meas-strc", "strc-meas"), labels = c("Simultaneous Reduction",
+        "Measurement Reduction", "Structural Reduction",
+        "Measurement-Structural Reduction", "Structural-Measurement Reduction"))
+  ) %>% 
+  spread(key = reduction, value = print_val)
+
+parameters <- sort(unique(print_results$param))
+all_tables <- list_along(parameters)
+for (i in seq_along(all_tables)) {
+  all_tables[[i]] <- filter(print_results, param == parameters[i])
+}
+```
+
+(ref:dtmr-int) DTMR estimates of item intercepts, $\lambda_{i,0}$  
+(ref:dtmr-m1) DTMR estimates of item main effects for Referent Units, $\lambda_{i,1,(1)}$  
+(ref:dtmr-m2) DTMR estimates of item main effects for Partitioning and Iterating, $\lambda_{i,1,(2)}$  
+(ref:dtmr-m3) DTMR estimates of item main effects for Appropriateness, $\lambda_{i,1,(3)}$  
+(ref:dtmr-m4) DTMR estimates of item main effects for Multiplicative Comparison, $\lambda_{i,1,(4)}$  
+(ref:dtmr-i12) DTMR estimates of item interactions between Referent Units and Partitioning and Iterating, $\lambda_{i,2,(1,2)}$  
+(ref:dtmr-i14) DTMR estimates of item interactions between Referent Units and Multiplicative Comparison, $\lambda_{i,2,(1,4)}$  
+(ref:dtmr-i24) DTMR estimates of item interactions between Partitioning and Iterating and Multiplicative Comparison, $\lambda_{i,2,(2,4)}$  
+(ref:dtmr-i34) DTMR estimates of item interactions between Appropriateness and Multiplicative Comparison, $\lambda_{i,2,(3,4)}$  
+(ref:dtmr-caption) Parentheses show the standard error of the estimate.  
+
+(ref:mis-cap) Missing values indicate the parameter was removed in the reduction process.
+
+```{r int-results}
+knitr::kable(select(all_tables[[1]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-int)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)"), notation = "symbol")
+```
+
+```{r m1-results}
+knitr::kable(select(all_tables[[2]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-m1)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+```{r m2-results}
+knitr::kable(select(all_tables[[3]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-m2)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+```{r m3-results}
+knitr::kable(select(all_tables[[4]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-m3)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+```{r m4-results}
+knitr::kable(select(all_tables[[5]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-m4)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+```{r i12-results}
+knitr::kable(select(all_tables[[6]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-i12)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+```{r i14-results}
+knitr::kable(select(all_tables[[7]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-i14)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+```{r i24-results}
+knitr::kable(select(all_tables[[8]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-i24)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+```{r i34-results}
+knitr::kable(select(all_tables[[9]], -param), align = "c", booktabs = TRUE,
+  format = knit_format, caption = "(ref:dtmr-i34)") %>%
+  kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+### Measurement model results
+
+Although it is tempting to compare the point estimates and standard errors for the parameters across model reduction techniques, this is ill-advised. Because the main effects and interactions are conditional on other parameters in the model, the exclusion of parameters will change the interpretation of the other parameters. Thus, changes in point estimates and standard errors may be expected. Thus, these results are most useful for comparing which parameters are ultimately retained in the model. In general we can see that the choice of the model reduction method can have a profound impact on which parameters are ultimately retained in the model. The exception to this is the item intercepts (Table \@ref(tab:int-results)). Because model reduction was constrained to never remove item intercepts, all intercepts are estimated, no matter which reduction technique was used. This is not the case for main effects. For example, when examining the main effects for attribute 1 (Table \@ref(tab:m1-results)), the main effect for item 13 was only retained when either the structural model only was reduced, or when the structural model was reduced first. This is because when the measurement model was reduced first, this main effect was non-significant, and thus reduced out of the model. However, reduction of the structural model first changed the parameter estimate and associated p-value enough for the parameter to be significant, and thus retained.
+
+A similar, but more extreme pattern can be seen in the interactions in the measurement model (Tables \@ref(tab:i12-results), \@ref(tab:i14-results), \@ref(tab:i24-results), \@ref(tab:i34-results)). Interactions between the attributes were only retained when the structural model alone was reduced (in which case all interactions from the measurement model were kept) or when the structural model was reduced first (in which case some of the interactions were retained). If the measurement model was reduced before the structural model, or with the structural model simultaneously, interaction terms from the measurement model were never retained.
+
+Finally, as mentioned above, it is generally ill-advised to compare point estimates and standard errors across model reduction methods. The exception to this rule is the item intercepts, because these parameters are not dependent on the other terms in the model (i.e., the intercept always represents the log-odds of providing a correct response when none of the attributes have been mastered). Thus, it is possible to compare these parameters across model reductions methods. It is clear that although these parameters are generally similar, the standard errors sometimes vary wildly. For example, the standard errors for the item intercepts sometimes changed drastically (Table \@ref(tab:int-results)). For instance, the standard error of the intercept on item four is consistently around 0.10, except for when only the measurement model is reduced. In this situation, the standard error is 14.55. A similar pattern can be seen in the intercepts for items five, 18, 19, and 23.
+
+### Structural model results
+
+The parameters of the structural model also show variability between model reduction processes. As with the measurement model parameters, different model reduction processes result in different parameters ultimately being retained in the model. Table \@ref(tab:strc-results) shows, for example, that 3-way interactions are almost always removed unless the measurement model is reduced first. The exception is the 3-way interaction between the Referent Units, Appropriateness, and Multiplicative Comparison attributes. Notably, this interaction appears to be relatively unstable across model reduction process, varying from 2.40 to 14.94. However, this variability in point estiamtes should be interpreted with caution. As was the case when examining the measurement model parameters, the structural parameters are also conditional upon other parameters, and thus, fluctuations may be expected depending on the inclusion or exclusion of the other parameters.
+
+The variation in which strucutral parameters are ultimately retained in the model can have serious implications for classification of respondents. Given that these parameters govern the base rate probabilities of membership in each of the attribute profiles, these differences in included parameters could lead to differences in the classification of respondents.
+
+```{r strc-results}
+dtmr_results %>%
+  filter(param_type == "strc", reduction != "satr", param_name != "G_0") %>%
+  mutate(
+    print_val = paste0(sprintf("%.2f", est), " (", sprintf("%.2f", se), ")")
+  ) %>%
+  select(reduction, param, print_val) %>%
+  mutate(
+    reduction = factor(reduction, levels = c("siml", "meas", "strc",
+      "meas-strc", "strc-meas"), labels = c("Simultaneous Reduction",
+        "Measurement Reduction", "Structural Reduction",
+        "Measurement-Structural Reduction", "Structural-Measurement Reduction"))
+  ) %>% 
+  spread(key = reduction, value = print_val) %>%
+  mutate(
+    orig_param = param,
+    param = map_chr(orig_param, function(x) {
+      paste0("$\\gamma_{", strsplit(x, "") %>% unlist() %>% .[1],
+        ",(", strsplit(x, "") %>% unlist() %>% .[-1] %>% paste(collapse = ","),
+        ")}$")
+    }),
+    param = gsub(",()", "", param, fixed = TRUE)
+  ) %>%
+  select(-orig_param) %>%
+  rename(Parameter = param) %>%
+  knitr::kable(booktabs = TRUE, align = "c", escape = FALSE,
+    format = knit_format,
+    caption = "DTMR estimates of structural parameters") %>%
+  kableExtra::kable_styling(latex_options = "hold_position") %>%
+  column_spec(2, width = "5.5em") %>%
+  column_spec(3, width = "5.5em") %>%
+  column_spec(4, width = "5.5em") %>%
+  column_spec(5, width = "5.5em") %>%
+  column_spec(6, width = "5.5em") %>%
+  add_footnote(c("(ref:dtmr-caption)", "(ref:mis-cap)"), notation = "symbol")
+```
+
+Figure \@ref(fig:dtmr-class) shows the change in the number of respondents classified in each attribute profile under each model reduction processes. Although the counts are fairly consistent across most attribute profiles, the counts for profiles 15 ([0,1,1,1]) and 16 ([1,1,1,1]) do show large discrepancies. There are about 50 respondents classified as master of Partitioning and Iterating, Appropriateness, and Multiplicative Comparison under the measurement-structural reduction process, but around 150 when using all other processes. The attribute profile where all attributes is mastered ([1,1,1,1]) is even more volatile, with the number of respondents placed into this class varying from 200 to nearly 350 depending on the reduction method.
+
+```{r dtmr-class, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "DTMR respondent classification under each model reduction process", fig.pos = "h"}
+path <- "analyses/dtmr-results/"
+reduction_types <- dir(path)
+
+cls_result <- map_df(reduction_types, function(x, path) {
+  read_table(file = paste0(path, x, "/sim.dat"), na = "*", col_names = c(
+    paste0("item", seq_len(28)),
+    "id",
+    paste0("profprob_", seq_len(16)),
+    "profile"
+  ), col_types = cols(.default = col_double())) %>%
+    add_column(reduction = x, .before = 1) %>%
+    select(reduction, id, profile)
+}, path = path) %>%
+  filter(reduction != "satr") %>%
+  mutate(
+    profile = factor(profile, levels = seq_len(16), labels = c("[0,0,0,0]",
+      "[1,0,0,0]", "[0,1,0,0]", "[0,0,1,0]", "[0,0,0,1]", "[1,1,0,0]",
+      "[1,0,1,0]", "[1,0,0,1]", "[0,1,1,0]", "[0,1,0,1]", "[0,0,1,1]",
+      "[1,1,1,0]", "[1,1,0,1]", "[1,0,1,1]", "[0,1,1,1]", "[1,1,1,1]")),
+    reduction = factor(reduction, levels = c("siml", "meas", "strc",
+      "meas-strc", "strc-meas"), labels = c("Simultaneous", "Measurement",
+        "Structural", "Measurement-\nStructural", "Structural-\nMeasurement"))
+  )
+
+p <- ggplot(cls_result, aes(x = reduction, fill = reduction)) +
+  facet_wrap(~ profile, ncol = 4, drop = FALSE) +
+  geom_bar(position = position_dodge(), color = "black") +
+  scale_fill_OkabeIto(name = "Reduction\nProcess") +
+  labs(y = "Number of Respondents", x = NULL) +
+  theme_bw() +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
+
+ggsave(filename = "dtmr-class.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "dtmr-class.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr:::is_latex_output()) {
+  knitr::include_graphics("figure/dtmr-class.pdf")
+} else {
+  knitr::include_graphics("figure/dtmr-class.png")
+}
+```
+
+## Conclusions {#dtmr-concl}
+
+The results from the pilot study provide evidence that the choice of model reduction process can significantly influence not only the estimates of the parameters, but also the classification of respondents into attribute profiles. However, without knowing the *true* values of parameters and attribute profiles of the respondents, it is impossible to know which model reduction process should be chosen. Therefore, a simulation study will be conducted in which the true values of the parameters and attribute profiles are known. In this way, it will be possible to measure how accurately each model reduction process is able to recover parameter values and respondent attribute profiles. The results of the simulation will then be able to inform which method is best suited to analyze the DTMR data.

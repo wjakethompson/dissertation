@@ -1,0 +1,108 @@
+# Methods
+
+The current study investigates the performance of the different model reduction processes using a Monte Carlo simulation. The simulation will be designed to follow the structure and characteristics of the DTMR data and the corresponding estimated parameters.
+
+## Overview of Monte Carlo methods
+
+Broadly speaking, Monte Carlo simulations can be used to evaluate the performance of different or competing methodologies [@rubinstein_simulation_2017]. As discussed in section \@ref(dtmr-concl), when using real data it is difficult to evaluate competing procedures, because the *true* values of the parameters are unknown. Thus, the estimates from different procedures can be compared to each other, but cannot be compared to what the real value is. With Monte Carlo methods, data is generated from a model with known parameters. The different procedures can be used on the simulated data, and then the resulting estimates compared to the actual values that were used to generate the data.
+
+The general process of a Monte Carlo simulation is as follows:
+
+1. Define distributions for model parameters,
+2. Randomly draw model parameters from previously defined distributions,
+3. Simulate response data from the drawn model parameters,
+4. Estimate the model using simulated response data, and
+5. Compare estimated parameters to the parameters that were randomly drawn and used to simulate the data.
+
+Monte Carlo studies have been used extensively in psychometric research [see @feinberg_conducting_2016 for a survey of simulation studies in educational measurement]. There are disadvantages to this methodology however [e.g., @harwell_monte_1996]. In the simulation of data, only parameters that are defined influence the generation of response data. Thus, if the model specified in the simulation study is inconsistent with reality, the simulation may not be informative. Additionally, the data generated will be perfectly model fitting (unless misfit is introduced in the data generation process). This means that the findings of the simulation study may not hold when there is misfit in the data. In other words, the main disadvantage of Monte Carlo studies is that simulation environment may not generalize to empirical data. Therefore, when designing a Monte Carlo study it is important to make the conditions and parameter distributions as realistic as possible [@feinberg_conducting_2016].
+
+## The current simulation
+
+In order to make this simulation as realistic as possible, it will be modeled after the DTMR assessment and the results from the [pilot study](#pilot). 
+
+### Simulation conditions
+
+The DTMR assessment consists of 28 items measuring four attributes. The simulation study will use three and four attributes in order to assess the effects of increasingly complex structural models. Additionally, each condition will hold the number of items constant at 30 to reduce the number of conditions in the simulation. Three sample size conditions will be used: 500, 1000, and 5000. These sizes are representative of hte DTMR sample size of 990, a smaller sample, and a large sample that would remove any sample size concerns for estimation. This will allows for the evaluation of sample size effects. Thus, there are two attribute conditions times three sample size conditions = six data generation conditions.
+
+For each generated data set, three Q-matrices will be used to estimate the model: the true Q-matrix, a 10 percent over-specified Q-matrix, and a 20 percent over-specified Q-matrix. In the over-specified Q-matrices, each value of zero in the Q-matrix will have either a 10 or 20 percent chance of being changed to a one, depending on the condition. Finally, for each Q-matrix, the model will be estimated in six ways:
+
+1. Saturated model,
+2. Simultaneous reduction,
+3. Measurement reduction,
+4. Structural reduction,
+5. Measurement-Structural reduction, and
+6. Structural-Measurement reduction.
+
+This results in a total of three Q-matrix conditions times six model estimation conditions = 18 estimation conditions. Therefore, there are six data generation conditions times 18 estimation conditions = 108 total conditions. Each condition will be replicated 100 times to ensure that robust estimates of the outcomes measures can be calculated for each condition.
+
+### Data generation process
+
+When simulating data sets, the $\gamma$ parameters that make up the structural model will be simulated first. There are no constraints on the values of $\gamma$; however, based on the results of the pilot study, structural parameters will be drawn from a $\mathcal{N}(0, 2)$ distribution. Using this distribution, most draws will come within 3 standard deviations of the mean, resulting in most values falling between -6 and 6. These values are consistent with what is seen in the DTMR pilot study (Table \@ref(tab:strc-results)). Additionally, this range allows for large effects using the guidelines suggest by @chinn_simple_2000, but also makes very large $\gamma$ values unlikely.
+
+Once the structural parameters have been generated, the base rate probabilities for each class can be calculated. These will in turn be used to generate attribute profiles for the simulated respondents. The attribute profiles, in conjunctions with item parameters, are used to calculate the probability of each respondent answering each item correctly. The item intercepts will be drawn from a uniform distribution of [-5.00, 0.60]. This range is representative of the intercepts found in the pilot study, which range from -5.03 to 0.60 (Table \@ref(tab:int-results)), and therefore provides a realistic distribution of possible values. The main effects of the LCDM are constrained to be positive. Thus, these parameters will be drawn from of uniform distribution of (0.00, 5.00]. This is also based on the results on the pilot study, where the large estimated main effect was 5.19 (Table \@ref(tab:m1-results), Table \@ref(tab:m2-results), Table \@ref(tab:m3-results), and Table \@ref(tab:m4-results)). Finally, the interaction terms are bounded on the lower end by $-1 \times smallest\ main\ effect$. Thus the distribution for each interaction will be dependent on the main effects that are generated, but will all be bound on the upper end at 2.00. Only one interaction term from the pilot study fell beyond this range, the interaction between attributes 1 (RU) and 4 (MC) for item 13 in the structural reduction condition (Table \@ref(tab:i14-results)). The item parameters and the attribute profiles are then used to calculate the probability of each respondent answering each item correctly. For each respondent/item combination then, a random uniform number is drawn between 0 and 1. If this random number is less than the probability of the respondent providing a correct response, a correct response is assigned (1), otherwise and incorrect response is assigned (0).
+
+### Model reduction process
+
+Due to the potential issue in the convergence of DCMs noted in section \@ref(lit-dcmreduc), model reduction may occur in one of two ways for this study. The first method is used for the reduction of models that successfully converged. Given a converged model, parameters to remove are identified by their p-values, as was the case for analysis of the DTMR assessment (Chapter \@ref(pilot)). The second method is for models that unsuccessfully converged. In this scenario, because p-values cannot be used to determine parameters that should be removed, all higher-order interaction parameters are flagged for removal (i.e., three-way interactions and greater). This heuristic is implemented in this study for two main reasons. First, it is highly unlikely that after collecting data, a researcher would simply give up on estimating the model if the fully saturated model did not converge. Thus, the inclusion of this rule-based model reduction will inform practitioners on best practices. Secondly, the removal of higher-order interaction terms has already been implemented in the literature as a method for dealing with non-convergence [see @bradshaw_diagnosing_2014 for an example]. Accordingly, this implementation of this rule in the simulation study mimics the current practice of model estimation. A modifiied model reduction flow chart can be seen in Figure \@ref(fig:sim-process).
+
+```{r sim-process, fig.cap = "Flowchart of simulation study reduction processes", out.width="90%", fig.pos = "h"}
+point_data <- data_frame(
+  x = c(1, 3, 3, 3, 5, 5),
+  y = c(5, 7, 5, 3, 5, 3),
+  label = c("Fully\nSaturated", "Simultaneous\nReduction",
+    "Measurement\nReduction", "Structural\nReduction",
+    "Measurement-\nStrucutral\nReduction",
+    "Structural-\nMeasurement\nReduction")
+)
+
+p <- ggplot() +
+  geom_text(data = point_data, aes(x = x, y = y, label = label),
+    size = 3) +
+  geom_point(data = point_data, aes(x = x, y = y), size = 35, alpha = 0.2) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 5.4, yend = 7, color = "p-value"),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 5.2, yend = 6.8,
+    color = "Heuristic"), arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 5.1, yend = 5.1, color = "p-value"),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 4.9, yend = 4.9,
+    color = "Heuristic"), arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 4.7, yend = 3.2, color = "p-value"),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 2.5, y = 4.5, yend = 3,
+    color = "Heuristic"), arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 3.5, xend = 4.5, y = 5, yend = 5, color = "p-value"),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 3.5, xend = 4.5, y = 3, yend = 3, color = "p-value"),
+    arrow = arrow(length = unit(0.2, "cm"))) +
+  coord_cartesian(xlim = c(0.5, 5.5), ylim = c(2, 8)) +
+  scale_color_OkabeIto(breaks = c("p-value", "Heuristic")) +
+  labs(color = "Reduction\nMethod") +
+  theme_void() +
+  theme(legend.position = "bottom")
+
+ggsave(filename = "sim-reduction-flow.pdf", plot = p, path = "figure",
+  width = 7, height = 5, units = "in", dpi = "retina")
+ggsave(filename = "sim-reduction-flow.png", plot = p, path = "figure",
+  width = 7, height = 5, units = "in", dpi = "retina")
+
+if (knitr:::is_latex_output()) {
+  knitr::include_graphics("figure/sim-reduction-flow.pdf")
+} else {
+  knitr::include_graphics("figure/sim-reduction-flow.png")
+}
+```
+
+Note that in Figure \@ref(fig:sim-process), the rule-based model reductions can only occur after the fully saturated model. The logic behind this decision is as follows. If the fully saturated converges and the next model fails to converge, the practitioner should revert back to the model that successfully converged, rather than continuing to attempt to remove additional parameters. Conversely, if the fully saturated model fails to converge, and the next model also fails to converge, then the third model would result in the removal of both measurement and structural parameters using the heuristic. This would then be equivalent to the simultaneous reduction method using the heuristic, rendering third-step model redundant. Finally, regardless of the convergance of the fully saturated model, if the second-step model converges, the model reduction process can continue to the third step using p-values.
+
+### Outcome measures
+
+Results for models that were reduced from converged and non-converged models will be analyzed separately. This is to allow for the possibility that different methods of reducing the model may prefer different model reduction processes. Accordingly, convergence rates of each model reduction process will be an important outcome measure. In addition, estimated item and structural parameters will be compared to the true values. The bias and mean squared error of the estimates will be calculated to evaluate the ability of each model reduction process to recover the parameter values. In these calculations, parameters that were removed in the reduction process will have their estimates set to 0. Further, the rate at which the true measurement and structural models are reached at then end of the reduction process will also be examined. 
+
+In addition to the recovery of model parameters, the recovery of attribute profiles will also be examined. This will be calculated at both the attribute and pattern level. This distinction differentiates how accurate attribute mastery was and how accurate profile assignment was. For example, assume a respondent had a true attribute profile of [1,0,1,0], and an estimated profile of [1,1,1,0]. At the pattern level, they were incorrectly assigned to an attribute profile. However, at the attribute level, 75% of attributes were correctly estimated. These measures will be evaluated using percent correct classification, and the quadratically weighted Cohen's kappa [@cohen_coefficient_1960; @cohen_weighted_1968].
+
+Finally model fit will be evaluated using the aggregated univariate and bivariate $\chi^2$ statistics [@rupp_diagnostic_2010]. These statistics are summed from item or item pair level $\chi^2$ statistics that compare the observed and expected counts of the response patterns for the item or pair of items. These statistics are larger when there is a greater amount of misfit, however, because the individual item-level indices are not independent of each other, the aggregated statistic doesn't follow the true asymptotic $\chi^2$ distribution. Thus, only the sum is used to assess fit, not the associated p-value. The evaluation of model fit will allow for an investigation into whether certain model reduction processes result in models that fit worse than the saturated model.
+
+### Software
+
+As with the pilot study, all model were estimated using *Mplus* version 7.4 [@muthen_mplus_1998] via the **MplusAutomation** package [@R-MplusAutomation] in *R* version `r getRversion()` [@R-base]. *Mplus* code for the estimation of the LCDM was generated in *R* using custom scripts based on the work of @rupp_files_2012 and @templin_obtaining_2013. Data generation and evaluation of the models was carried out in *R* using the **dplyr** [@R-dplyr], **forcats** [@R-forcats], **lubridate** [@R-lubridate], **portableParallelSeeds** [@R-portableParallelSeeds], **purrr** [@R-purrr], **readr** [@R-readr], **stringr** [@R-stringr], and **tidyr** [@R-tidyr], **tidyselect** [@R-tidyselect] packages.

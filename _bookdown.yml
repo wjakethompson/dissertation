@@ -1,0 +1,17 @@
+rmd_files: [
+  "index.rmd",
+
+  "chapters/01-introduction.Rmd",
+  "chapters/02-literature-review.Rmd",
+  "chapters/03-pilot-study.Rmd",
+  "chapters/04-methods.Rmd",
+  "chapters/05-results.Rmd",
+  "chapters/06-discussion.Rmd",
+
+  "chapters/90-References.Rmd"
+]
+download: [
+  ["WJThompson_Dissertation.pdf", "PDF"]
+]
+book_filename: "WJThompson_Dissertation"
+chapter_name: "Chapter "

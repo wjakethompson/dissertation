@@ -1,0 +1,8 @@
+bookdown::gitbook:
+  config:
+    toc:
+      collapse: section
+      before: |
+        <li><strong><a href="./">DCM Model Estimation</a></strong></li>
+      sharing: no
+    css: css/style.css
