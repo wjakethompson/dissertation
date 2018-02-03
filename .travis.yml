@@ -6,6 +6,10 @@ cache:
   - _bookdown_files
   - $HOME/.npm
 
+repos:
+  CRAN: https://cran.rstudio.com/
+  KRAN: http://rweb.crmda.ku.edu/kran/
+
 pandoc_version: 1.17.2
 
 before_install:

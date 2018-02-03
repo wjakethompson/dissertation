@@ -1,0 +1,32 @@
+Package: wjtdiss
+Title: Evaluating Model Estimation Processes for Diagnostic Classification Models
+Version: 0.0.0.9000
+Authors@R: c(
+  person("William", "Thompson", , "wjakethompson@gmail.com", c("aut", "cre"))
+  )
+URL: https://github.com/wjakethompson/dissertation
+Depends: 
+    R (>= 3.1.0)
+Imports: 
+    colorblindr
+    dplyr
+    forcats
+    ggplot2
+    glue
+    hrbrthemes
+    kableExtra
+    lubridate
+    MplusAutomation
+    portableParallelSeeds
+    purrr
+    readr
+    stringr
+    tibble
+    tidyr
+    tidyselect
+    tidyverse
+Remotes: 
+    clauswilke/colorblindr
+    tidyverse/dplyr
+    tidyverse/ggplot2
+    hrbrmstr/hrbrthemes
