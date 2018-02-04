@@ -6,3 +6,5 @@ _book/*
 _bookdown_files/*
 dtmr-data.csv
 dtmr_mplus.csv
+sim-results.rds
+analyses/replications/*
