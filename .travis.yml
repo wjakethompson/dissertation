@@ -11,7 +11,7 @@ repos:
   KRAN: http://rweb.crmda.ku.edu/kran/
   RFOG: http://R-Forge.R-project.org/
 
-pandoc_version: 1.17.2
+pandoc_version: 1.19.2.1
 
 before_install:
 - npm install netlify-cli -g
