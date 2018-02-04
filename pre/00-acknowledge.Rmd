@@ -1,9 +1,1 @@
-I would like to thank Neal for reasons....
-
-I would also like to thank Jonathan Templin, Billy Skorupski, Brooke Nash, and Paul Johnson. This document would not have been possible without their insights and suggestions. I greatly appreciate not only the guidance and encouragement they have offered this project, but also the mentorship each has contributed to my both my professional and personal growth.
-
-I am grateful to my family who have been gracious enough to provide a seemingly unending amount of patience in addition to their unconditional love and support. I promise to call more now that this has been written.
-
-I would be remiss if I did not thank the wonderful software developers whose work made this document so much easier to put together. I would like to thank Yihui Xie for creating the **knitr** and **bookdown** packages that were used to write this document (in conjunction with a \LaTeX\ template provided by Paul Johnson). I would also like to thank Hadley Wickham and his team at RStudio for their work on the suite of **tidyverse** packages that provided the basis for my *R* code.
-
-Finally, I would like to thank my wonderful wife Julia.
+Acknowledge some people...
