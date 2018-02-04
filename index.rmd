@@ -32,10 +32,10 @@ link-citations: yes
 lot: true
 lof: true
 ### Pretext Sections -----------------------------------------------------------
-abstract: >
-  `r if (knitr:::is_latex_output()) jayhawkdown::inc("pre/00-abstract.Rmd")`
-acknowledgements: >
-  `r if (knitr:::is_latex_output()) jayhawkdown::inc("pre/00-acknowledge.Rmd")`
+# abstract: >
+#   `r if (knitr:::is_latex_output()) jayhawkdown::inc("pre/00-abstract.Rmd")`
+# acknowledgements: >
+#   `r if (knitr:::is_latex_output()) jayhawkdown::inc("pre/00-acknowledge.Rmd")`
 ---
 
 ```{r instructions, include = FALSE}
@@ -82,8 +82,8 @@ knit_format <- ifelse(knitr:::is_html_output(), "html", "latex")
 
 `r if (knitr::is_html_output()) "## Abstract {-}"`
 
-`r if (knitr::is_html_output()) jayhawkdown::inc("pre/00-abstract.Rmd")`
+`r #if (knitr::is_html_output()) jayhawkdown::inc("pre/00-abstract.Rmd")`
 
 `r if (knitr::is_html_output()) "## Acknowledgements {-}"`
 
-`r if (knitr::is_html_output()) jayhawkdown::inc("pre/00-acknowledge.Rmd")`
+`r #if (knitr::is_html_output()) jayhawkdown::inc("pre/00-acknowledge.Rmd")`
