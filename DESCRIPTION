@@ -16,6 +16,7 @@ Imports:
     ggplot2,
     glue,
     hrbrthemes,
+    jayhawkdown,
     kableExtra,
     lubridate,
     MplusAutomation,
@@ -33,4 +34,5 @@ Remotes:
     wilkelab/cowplot,
     tidyverse/dplyr,
     tidyverse/ggplot2,
-    hrbrmstr/hrbrthemes
+    hrbrmstr/hrbrthemes,
+    wjakethompson/jayhawkdown
