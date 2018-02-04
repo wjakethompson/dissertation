@@ -4,4 +4,5 @@
 .Ruserdata
 _book/*
 _bookdown_files/*
-dtmr*.csv
+dtmr-data.csv
+dtmr_mplus.csv
