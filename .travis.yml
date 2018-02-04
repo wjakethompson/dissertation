@@ -9,6 +9,7 @@ cache:
 repos:
   CRAN: https://cran.rstudio.com/
   KRAN: http://rweb.crmda.ku.edu/kran/
+  RFOG: http://R-Forge.R-project.org/
 
 pandoc_version: 1.17.2
 
