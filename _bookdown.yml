@@ -8,7 +8,9 @@ rmd_files: [
   "chapters/05-results.Rmd",
   "chapters/06-discussion.Rmd",
 
-  "chapters/90-References.Rmd"
+  "chapters/90-References.Rmd",
+  
+  "chapters/91-full-param-recovery.Rmd"
 ]
 download: [
   ["WJThompson_Dissertation.pdf", "PDF"]

@@ -1,0 +1,128 @@
+# (APPENDIX) Appendix {-}
+
+# Something important
+
+```{r pvalue-icp-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model intercept estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = intercept_bias, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Bias", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-icp-bias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-icp-bias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-icp-bias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-icp-bias.png")
+}
+```
+
+```{r pvalue-mef-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = main_effect_bias, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Bias", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-mef-bias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-mef-bias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-mef-bias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-mef-bias.png")
+}
+```
+
+```{r pvalue-int2-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 2-way interaction estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = interaction2_bias, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Bias", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-int2-bias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-int2-bias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-int2-bias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-int2-bias.png")
+}
+```
+
+```{r pvalue-int3-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 3-way interaction estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = interaction3_bias, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Bias", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-int3-bias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-int3-bias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-int3-bias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-int3-bias.png")
+}
+```
+
+```{r pvalue-int4-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 4-way interaction estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = interaction4_bias, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Bias", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-int4-bias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-int4-bias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-int4-bias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-int4-bias.png")
+}
+```
