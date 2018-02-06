@@ -1,3 +1,5 @@
+jayhawkdown::thesis_pdf: default
+
 bookdown::gitbook:
   config:
     toc:
