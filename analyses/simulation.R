@@ -1725,3 +1725,12 @@ write_rds(sim_results, path = "analyses/sim-results.rds", compress = "gz")
 write_rds(sim_results$recovery, path = "analyses/sim-recovery.rds",
   compress = "gz")
 write_rds(sim_results$fit, path = "analyses/sim-fit.rds", compress = "gz")
+
+allreps <- sim_results %>%
+  pluck("all_results") %>%
+  bind_rows() %>%
+  select(cond, attributes, sample_size, dataset, over_spec, model, rm_param,
+    reduction, converge, satr_converge, correct_strc, correct_meas,
+    attribute_kappa, attribute_ccr, profile_kappa, profile_ccr, aic, bic, abic,
+    uni_chi, uni_chi_df, bi_chi, bi_chi_df, contains("bias"), contains("mse"))
+write_rds(allreps, path = "analyses/sim-allreps.rds", compress = "gz")
