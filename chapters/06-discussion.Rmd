@@ -1,1 +1,8 @@
 # Discussion
+
+
+## Future Directions
+
+non-random strucutral model? or least ensure students in all classes.
+
+reduction of number of classes, rather than just parameters?
