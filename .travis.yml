@@ -5,6 +5,8 @@ cache:
   directories:
   - _bookdown_files
   - $HOME/.npm
+apt_packages:
+  - libudunits2-dev
 
 repos:
   CRAN: https://cran.rstudio.com/
