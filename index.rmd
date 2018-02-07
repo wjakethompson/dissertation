@@ -50,7 +50,7 @@ acknowledgements: >
 ```{r setup, include = FALSE}
 needed_packages <- c("tidyverse", "kableExtra", "MplusAutomation", "forcats",
   "portableParallelSeeds", "stringr", "colorblindr", "hrbrthemes", "glue",
-  "lubridate", "tidyselect")
+  "lubridate", "tidyselect", "ggforce")
 load_packages <- function(x) {
   if (!(x %in% rownames(installed.packages()))) {
     install.packages(x)
@@ -71,7 +71,8 @@ knitr::opts_chunk$set(
   fig.path = "figure/",
   fig.align = "center",
   out.width = "80%",
-  dpi = 2000
+  dpi = 2000,
+  dev = "cairo_pdf"
 )
 
 options(knitr.kable.NA = '')

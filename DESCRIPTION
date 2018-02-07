@@ -13,6 +13,7 @@ Imports:
     cowplot,
     dplyr,
     forcats,
+    ggforce,
     ggplot2,
     glue,
     hrbrthemes,
@@ -33,6 +34,7 @@ Remotes:
     clauswilke/colorblindr,
     wilkelab/cowplot,
     tidyverse/dplyr,
+    thomasp85/ggforce,
     tidyverse/ggplot2,
     hrbrmstr/hrbrthemes,
     wjakethompson/jayhawkdown

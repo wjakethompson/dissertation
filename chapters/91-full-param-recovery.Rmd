@@ -1,12 +1,14 @@
 # (APPENDIX) Appendix {-}
 
-# Something important
+# Parameter Recovery with Reduction from P-values {#app-param-recov}
+
+## Individual Bias
 
 ```{r pvalue-icp-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model intercept estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
   filter(satr_converge == TRUE, model != "Saturated") %>%
   ggplot(aes(x = sample_size, y = intercept_bias, group = model, color = model)) +
-  facet_grid(over_spec ~ attributes) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
   scale_color_OkabeIto() +
   expand_limits(y = c(0, 1)) +
@@ -31,7 +33,7 @@ if (knitr::is_latex_output()) {
 p <- full_results %>%
   filter(satr_converge == TRUE, model != "Saturated") %>%
   ggplot(aes(x = sample_size, y = main_effect_bias, group = model, color = model)) +
-  facet_grid(over_spec ~ attributes) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
   scale_color_OkabeIto() +
   expand_limits(y = c(0, 1)) +
@@ -56,7 +58,7 @@ if (knitr::is_latex_output()) {
 p <- full_results %>%
   filter(satr_converge == TRUE, model != "Saturated") %>%
   ggplot(aes(x = sample_size, y = interaction2_bias, group = model, color = model)) +
-  facet_grid(over_spec ~ attributes) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
   scale_color_OkabeIto() +
   expand_limits(y = c(0, 1)) +
@@ -81,7 +83,7 @@ if (knitr::is_latex_output()) {
 p <- full_results %>%
   filter(satr_converge == TRUE, model != "Saturated") %>%
   ggplot(aes(x = sample_size, y = interaction3_bias, group = model, color = model)) +
-  facet_grid(over_spec ~ attributes) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
   scale_color_OkabeIto() +
   expand_limits(y = c(0, 1)) +
@@ -106,7 +108,7 @@ if (knitr::is_latex_output()) {
 p <- full_results %>%
   filter(satr_converge == TRUE, model != "Saturated") %>%
   ggplot(aes(x = sample_size, y = interaction4_bias, group = model, color = model)) +
-  facet_grid(over_spec ~ attributes) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
   scale_color_OkabeIto() +
   expand_limits(y = c(0, 1)) +
@@ -124,5 +126,132 @@ if (knitr::is_latex_output()) {
   knitr::include_graphics("figure/pvalue-int4-bias.pdf")
 } else {
   knitr::include_graphics("figure/pvalue-int4-bias.png")
+}
+```
+
+## Individual Mean Square Error
+
+```{r pvalue-icp-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model intercept estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = intercept_mse, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Mean Square Error", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-icp-mse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-icp-mse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-icp-mse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-icp-mse.png")
+}
+```
+
+```{r pvalue-mef-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = main_effect_mse, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Mean Square Error", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-mef-mse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-mef-mse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-mef-mse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-mef-mse.png")
+}
+```
+
+```{r pvalue-int2-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 2-way interaction estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = interaction2_mse, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Mean Square Error", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-int2-mse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-int2-mse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-int2-mse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-int2-mse.png")
+}
+```
+
+```{r pvalue-int3-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 3-way interaction estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = interaction3_mse, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Mean Square Error", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-int3-mse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-int3-mse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-int3-mse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-int3-mse.png")
+}
+```
+
+```{r pvalue-int4-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 4-way interaction estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = interaction4_mse, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Mean Square Error", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-int4-mse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-int4-mse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-int4-mse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-int4-mse.png")
 }
 ```
