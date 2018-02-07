@@ -1,10 +1,8 @@
 # Results
 
-```{r read-results, eval = FALSE}
+```{r read-results}
 rec_results <- read_rds("data/sim-recovery.rds")
-full_results <- read_rds("data/sim-results.rds") %>%
-  pluck("all_results") %>%
-  bind_rows()
+full_results <- read_rds("data/sim-allreps.rds")
 
 rec_results <- rec_results %>%
   ungroup() %>%
@@ -23,11 +21,11 @@ rec_results <- rec_results %>%
   )
 ```
 
-Results from the simulation study are described in two sections. Section \@ref(pval-results) summarizes the performance of the reduction processes when the parameters to reduce were determined by p-values from a converged model. Section \@ref(heur-results) summarizes results of the reduction processes a model did not converge, and the parameters to reduce were determined by the higher order interaction heuristic.
+Results from the simulation study are described in two sections. Section \@ref(pval-results) summarizes the performance of the reduction processes when the parameters to reduce were determined by p-values from a converged model (i.e., p-value/p-value reduction). Section \@ref(heur-results) summarizes results of the reduction processes a model did not converge, and the parameters to reduce were determined by the higher order interaction heuristic (i.e., heuristic/p-value reduction).
 
-Table \@ref(tab:satr-converge) shows...
+Table \@ref(tab:satr-converge) shows the convergence rates for the saturated model. As expected, the convergence rates decrease as the number of attributes increases, and decrease dramatically as the over specification of the Q-matrix increases. Interestingly, sample size had relatively little effect on the convergence rates of the saturated model, with rates staying fairly consistent with attribute and over specification conditions.
 
-```{r satr-converge, eval = FALSE}
+```{r satr-converge}
 satr_con <- full_results %>%
   filter(model == "satr") %>%
   group_by(attributes, sample_size, over_spec) %>%
@@ -44,15 +42,37 @@ colnames(satr_con) <- c("Q-Matrix Over Specification", "n = 500", "n = 1000",
   "n = 5000", "n = 500", "n = 1000", "n = 5000")
 
 knitr::kable(satr_con, align = "c", booktabs = TRUE,
-  caption = "Saturated model convergence rates") %>%
+  caption = "Saturated model convergence rates", format = knit_format) %>%
   kable_styling(latex_options = "hold_position") %>%
   add_header_above(c(" " = 1, "3 Attributes" = 3, "4 Attributes" = 3))
 ```
 
+## Reduction by p-value {#pval-results}
 
-Figure \@ref(fig:pvalue-converge) shows the convergence rates for the reduction processes when the fully saturated model converged...
+```{r format-reps}
+full_results <- full_results %>%
+  ungroup() %>%
+  mutate(
+    cond = factor(cond),
+    attributes = factor(attributes, levels = c(3, 4), labels = c("3 Attributes",
+      "4 Attributes")),
+    sample_size = factor(sample_size),
+    over_spec = factor(over_spec, levels = c(0, 0.1, 0.2),
+      labels = c("Over Specification:\n0.0", "Over Specification:\n0.1",
+        "Over Specification:\n0.2")),
+    model = factor(model, levels = c("satr", "siml", "meas", "strc",
+      "meas-strc", "strc-meas"), labels = c("Saturated", "Simultaneous",
+        "Measurement", "Structural", "Measurement-Structural",
+        "Structural-Measurement"))
+  )
+```
 
-```{r pvalue-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using p-values", fig.pos = "h", eval = FALSE}
+
+### Convergence
+
+When saturated model converged, reduction of measurement and structural parameters proceeded by using p-values to determine which parameters to reduce. Figure \@ref(fig:pvalue-converge) shows the convergence rates for these reduction processes when. Recall that measurement-structural and structural measurement reduction only occured if the measurement and strucutral reductions, respectively, converged. Across all conditions, reduction processes where there measurment model was reduced first (i.e., simultaneous, measurment, and measurement-structural) tended to have higher convergence rates. This most notable when the Q-matrix was overspecified. In the most extreme case, the four-attribute condition with a 20 percent over specified Q-matrix, no reductions converged if the measurement model was not part of the initial reduction. However, because the saturated model very rarely converged for this condition (\@ref(tab:satr-converge)), the sample size is very limited.
+
+```{r pvalue-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>% 
   filter(satr_converge == TRUE, model != "Saturated") %>%
   ggplot(aes(x = sample_size, y = converge, group = model, fill = model)) +
@@ -69,12 +89,88 @@ ggsave(filename = "pvalue-converge.pdf", plot = p, path = "figure", width = 8,
 ggsave(filename = "pvalue-converge.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
-knitr::include_graphics("figure/pvalue-converge.pdf")
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-converge.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-converge.png")
+}
 ```
+
+### Parameter Recovery
+
+To evaluate the performance of the reduction processes, the bias and mean square error of the parameter estimates can be examined. The bias represents the difference between the true value and the estimated value. The mean square error represents the average of the squared difference between the true and estimated values. Figure \@ref(fig:pvalue-bias) and Figure \@ref(fig:pvalue-mse) show the total bias and total mean square error, respectively, across all measurement model parameters when reducing using p-values. Because of some outlying data sets, biases with an absolute value greater than 100 and mean square errors with a value greater than 100 have been excluded from the figures. Figures showing all biases and mean square errors, separated by the type of parameter can be seen in Appendix \@ref(app-param-recov).
+
+```{r pvalue-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+p <- rec_results %>% 
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  mutate(
+    total_bias = pmap_dbl(list(intercept_bias, main_effect_bias,
+      interaction2_bias, interaction3_bias, interaction4_bias),
+      function(x1, x2, x3, x4, x5) {
+        sum(x1, x2, x3, x4, x5, na.rm = TRUE)
+      })
+  ) %>%
+  filter(abs(total_bias) < 100) %>%
+  ggplot(aes(x = sample_size, y = total_bias, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Average Bias", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-bias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-bias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-bias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-bias.png")
+}
+```
+
+```{r pvalue-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+p <- rec_results %>% 
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  mutate(
+    total_mse = pmap_dbl(list(intercept_mse, main_effect_mse,
+      interaction2_mse, interaction3_mse, interaction4_mse),
+      function(x1, x2, x3, x4, x5) {
+        sum(x1, x2, x3, x4, x5, na.rm = TRUE)
+      })
+  ) %>%
+  mutate(total_mse = case_when(total_mse <= 100 ~ total_mse, TRUE ~ NA_real_)) %>%
+  ggplot(aes(x = sample_size, y = total_mse, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Average Mean Square Error", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-mse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-mse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-mse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-mse.png")
+}
+```
+
+
+
+## Reduction by heuristic {#heur-results}
 
 Figure \@ref(fig:rule-converge) shows...
 
-```{r rule-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using heuristic", fig.pos = "h", eval = FALSE}
+```{r rule-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using heuristic", fig.pos = "h"}
 p <- rec_results %>% 
   filter(satr_converge == FALSE, model != "Saturated") %>%
   ggplot(aes(x = sample_size, y = converge, group = model, fill = model)) +
@@ -91,10 +187,10 @@ ggsave(filename = "rule-converge.pdf", plot = p, path = "figure", width = 8,
 ggsave(filename = "rule-converge.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
-knitr::include_graphics("figure/rule-converge.pdf")
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/rule-converge.pdf")
+} else {
+  knitr::include_graphics("figure/rule-converge.png")
+}
 ```
 
-## Reduction by p-value {#pval-results}
-
-
-## Reduction by heuristic {#heur-results}
