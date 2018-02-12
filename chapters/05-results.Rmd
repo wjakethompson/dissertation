@@ -132,7 +132,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r pvalue-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+```{r pvalue-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>% 
   filter(satr_converge == TRUE, model != "Saturated") %>%
   mutate(
@@ -163,6 +163,60 @@ if (knitr::is_latex_output()) {
   knitr::include_graphics("figure/pvalue-mse.png")
 }
 ```
+
+Figure \@ref(fig:pvalue-bias) shows that across all conditions there is relatively little bias in the measurement model parameters. This is especially true when the Q-matrix is correctly specified. The large negative bias seen in the measurement reduction condition for the three attribute and 10 percent over specified Q-matrix is due to a single three way interaction in one data set, as can be seen in Figure \@ref(fig:pvalue-int3-bias). In contrast, there is relatively large mean square error values across conditions. As expected, this decreases as the sample size increases. Thus, these results suggest that larger sample sizes (i.e., greater than 1,000) are needed in order to ensure unbiased estimates of measurement model parameters with low levels of error.
+
+Figure \@ref(fig:pvalue-strc-bias) and Figure \@ref(fig:pvalue-strc-mse) show the bias and mean square error of the structural parameters respectively. Overall, there is very little bias and mean squared error in the structural parameters. The instances where larger bias and mean squared error are indicated (e.g., measurement reduction of a four attribute model with a 20% over specified Q-matrix) are instances where very few of the model actually converged. Thus, these values are based on only a few replications. Thus, these results suggests that given model convergence, the structural parameters are usually well estimated regardless of model reduction method.
+
+```{r pvalue-strc-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structrual model parameter estimates when reducing using p-values", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = structural_bias, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Average Bias", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-strc-bias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-strc-bias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-strc-bias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-strc-bias.png")
+}
+```
+
+```{r pvalue-strc-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in structrual model parameter estimates when reducing using p-values", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE, model != "Saturated") %>%
+  ggplot(aes(x = sample_size, y = structural_mse, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Average Mean Square Error", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-strc-mse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-strc-mse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-strc-mse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-strc-mse.png")
+}
+```
+
+### Mastery Classification
 
 
 
