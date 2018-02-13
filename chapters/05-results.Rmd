@@ -1,7 +1,7 @@
 # Results
 
 ```{r read-results}
-rec_results <- read_rds("data/sim-recovery.rds")
+rec_results  <- read_rds("data/sim-recovery.rds")
 full_results <- read_rds("data/sim-allreps.rds")
 
 rec_results <- rec_results %>%
@@ -74,7 +74,7 @@ When saturated model converged, reduction of measurement and structural paramete
 
 ```{r pvalue-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>% 
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = converge, group = model, fill = model)) +
   facet_grid(over_spec ~ attributes) +
   geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
@@ -102,7 +102,7 @@ To evaluate the performance of the reduction processes, the bias and mean square
 
 ```{r pvalue-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>% 
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   mutate(
     total_bias = pmap_dbl(list(intercept_bias, main_effect_bias,
       interaction2_bias, interaction3_bias, interaction4_bias),
@@ -134,7 +134,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>% 
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   mutate(
     total_mse = pmap_dbl(list(intercept_mse, main_effect_mse,
       interaction2_mse, interaction3_mse, interaction4_mse),
@@ -170,7 +170,9 @@ Figure \@ref(fig:pvalue-strc-bias) and Figure \@ref(fig:pvalue-strc-mse) show th
 
 ```{r pvalue-strc-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structrual model parameter estimates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
+  mutate(structural_bias = case_when(structural_bias <= 100 ~ structural_bias,
+    TRUE ~ NA_real_)) %>%
   ggplot(aes(x = sample_size, y = structural_bias, group = model, fill = model)) +
   facet_grid(over_spec ~ attributes) +
   geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
@@ -194,7 +196,9 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-strc-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in structrual model parameter estimates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
+  mutate(structural_mse = case_when(structural_mse <= 100 ~ structural_mse,
+    TRUE ~ NA_real_)) %>%
   ggplot(aes(x = sample_size, y = structural_mse, group = model, fill = model)) +
   facet_grid(over_spec ~ attributes) +
   geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
@@ -218,7 +222,106 @@ if (knitr::is_latex_output()) {
 
 ### Mastery Classification
 
+(ref:pvalue-kap-attr) Average Cohen's $\kappa$ of attribute mastery when reducing using p-values
 
+(ref:pvalue-kap-prof) Average Cohen's $\kappa$ of profile assignment when reducing using p-values
+
+```{r pvalue-attr-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of attribute mastery when reducing using p-values", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = attribute_ccr, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Attribute Correct Classification Rate", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-attr-ccr.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-attr-ccr.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-attr-ccr.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-attr-ccr.png")
+}
+```
+
+```{r pvalue-attr-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:pvalue-kap-attr)", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = attribute_kappa, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = expression("Average Attribute Cohen's "*kappa), fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-attr-kap.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-attr-kap.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-attr-kap.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-attr-kap.png")
+}
+```
+
+```{r pvalue-prof-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of profile assignment when reducing using p-values", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = profile_ccr, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Profile Correct Classification Rate", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-prof-ccr.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-prof-ccr.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-prof-ccr.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-prof-ccr.png")
+}
+```
+
+```{r pvalue-prof-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:pvalue-kap-prof)", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = profile_kappa, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = expression("Average Profile Cohen's "*kappa),
+    fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-prof-kap.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-prof-kap.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-prof-kap.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-prof-kap.png")
+}
+```
 
 ## Reduction by heuristic {#heur-results}
 
@@ -226,7 +329,7 @@ Figure \@ref(fig:rule-converge) shows...
 
 ```{r rule-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using heuristic", fig.pos = "h"}
 p <- rec_results %>% 
-  filter(satr_converge == FALSE, model != "Saturated") %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = converge, group = model, fill = model)) +
   facet_grid(over_spec ~ attributes) +
   geom_col(width = 0.7, position = position_dodge(width = 0.7)) +

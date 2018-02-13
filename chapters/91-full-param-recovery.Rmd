@@ -6,7 +6,7 @@
 
 ```{r pvalue-icp-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model intercept estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = intercept_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -31,7 +31,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-mef-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = main_effect_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -56,7 +56,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-int2-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 2-way interaction estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = interaction2_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -81,7 +81,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-int3-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 3-way interaction estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = interaction3_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -106,7 +106,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-int4-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 4-way interaction estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = interaction4_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -129,11 +129,36 @@ if (knitr::is_latex_output()) {
 }
 ```
 
+```{r pvalue-strc-indbias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structural model estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = structural_bias, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Bias", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-strc-indbias.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-strc-indbias.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-strc-indbias.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-strc-indbias.png")
+}
+```
+
 ## Individual Mean Square Error
 
 ```{r pvalue-icp-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model intercept estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = intercept_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -158,7 +183,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-mef-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = main_effect_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -183,7 +208,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-int2-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 2-way interaction estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = interaction2_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -208,7 +233,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-int3-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 3-way interaction estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = interaction3_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -233,7 +258,7 @@ if (knitr::is_latex_output()) {
 
 ```{r pvalue-int4-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 4-way interaction estimates when reducing using p-values", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE, model != "Saturated") %>%
+  filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = interaction4_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -253,5 +278,30 @@ if (knitr::is_latex_output()) {
   knitr::include_graphics("figure/pvalue-int4-mse.pdf")
 } else {
   knitr::include_graphics("figure/pvalue-int4-mse.png")
+}
+```
+
+```{r pvalue-strc-indmse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in structural model estimates when reducing using p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = structural_mse, group = model, color = model)) +
+  facet_grid(over_spec ~ attributes, scales = "free_y") +
+  geom_sina(alpha = 0.6, maxwidth = 0.6) +
+  scale_color_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Bias", color = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1)))
+
+ggsave(filename = "pvalue-strc-indmse.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-strc-indmse.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-strc-indmse.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-strc-indmse.png")
 }
 ```
