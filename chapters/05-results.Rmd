@@ -70,7 +70,7 @@ full_results <- full_results %>%
 
 ### Convergence
 
-When saturated model converged, reduction of measurement and structural parameters proceeded by using p-values to determine which parameters to reduce. Figure \@ref(fig:pvalue-converge) shows the convergence rates for these reduction processes when. Recall that measurement-structural and structural measurement reduction only occured if the measurement and strucutral reductions, respectively, converged. Across all conditions, reduction processes where there measurment model was reduced first (i.e., simultaneous, measurment, and measurement-structural) tended to have higher convergence rates. This most notable when the Q-matrix was overspecified. In the most extreme case, the four-attribute condition with a 20 percent over specified Q-matrix, no reductions converged if the measurement model was not part of the initial reduction. However, because the saturated model very rarely converged for this condition (\@ref(tab:satr-converge)), the sample size is very limited.
+When saturated model converged, reduction of measurement and structural parameters proceeded by using p-values to determine which parameters to reduce. Figure \@ref(fig:pvalue-converge) shows the convergence rates for these reduction processes when. Recall that measurement-structural and structural measurement reduction only occured if the measurement and strucutral reductions, respectively, converged. Across all conditions, reduction processes where there measurment model was reduced first (i.e., simultaneous, measurment, and measurement-structural) tended to have higher convergence rates. This most notable when the Q-matrix was overspecified. In the most extreme case, the four-attribute condition with a 20 percent over specified Q-matrix, no reductions converged if the measurement model was not part of the initial reduction. However, because the saturated model very rarely converged for this condition (Table \@ref(tab:satr-converge)), the sample size is very limited.
 
 ```{r pvalue-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>% 
@@ -222,6 +222,8 @@ if (knitr::is_latex_output()) {
 
 ### Mastery Classification
 
+Another critical measure of performance is the rate at which respondents are correctly classified as masters of the attributes. This is assessed at two levels: the individual attribute classifications, and the overall profile classification. As described in section \@ref(method-outcome), profile mastery and attribute mastery differentiate between two types of assignments that can occur. For example, a respondent may have a true profile of [1,0,1,0] and an estimated profile of [1,1,1,0]. Here, the overall profile assignment is incorrect (profile classification), but three out of the four individual attributes are correctly classified (attribute classification). Respondents were classified as a master of an attribute if their posterior probability of mastery was greater than or equal to .5, and non-master of the attribute otherwise. Figure \@ref(fig:pvalue-attr-ccr) and Figure \@ref(fig:pvalue-attr-kap) show the attribute level agreement as measured by the average correct classification rate and average Cohen's $\kappa$, respectively.
+
 (ref:pvalue-kap-attr) Average Cohen's $\kappa$ of attribute mastery when reducing using p-values
 
 (ref:pvalue-kap-prof) Average Cohen's $\kappa$ of profile assignment when reducing using p-values
@@ -274,6 +276,10 @@ if (knitr::is_latex_output()) {
 }
 ```
 
+Across all conditions, both the correct classification rate and Cohen's $\kappa$ show high rates of agreement between true and estimated attribute classifications. The exception is a four-attribute assessment with a sample size of only 500. Under these conditions, all model reduction processes showed lower rates of agreement than with larger samples or only three attributes.
+
+The overall profile classification shows a similar pattern. Figure \@ref(fig:pvalue-prof-ccr) and Figure \@ref(fig:pvalue-prof-kap) show the correct classificaiton rate and Cohen's $\kappa$ of the overall profiles. As expected, the overall profile agreement is consistently lower than the attribute level mastery classification agreement, although the classification agreement is generally consistent across all model reduction processes. Additionally, as with the attribute classifications, profile classification agreement was lower in the four-attriubte, 500 sample size conditions.
+
 ```{r pvalue-prof-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of profile assignment when reducing using p-values", fig.pos = "h"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
@@ -322,6 +328,10 @@ if (knitr::is_latex_output()) {
   knitr::include_graphics("figure/pvalue-prof-kap.png")
 }
 ```
+
+### Description of reduced parameters
+
+
 
 ## Reduction by heuristic {#heur-results}
 
