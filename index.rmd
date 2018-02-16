@@ -79,12 +79,10 @@ options(knitr.kable.NA = '')
 knit_format <- ifelse(knitr:::is_latex_output(), "latex", "html")
 ```
 
-`r if (knitr::is_html_output()) "# Preface {-}"`
-
-`r if (knitr::is_html_output()) "## Abstract {-}"`
+`r if (knitr::is_html_output()) "# Abstract {-}"`
 
 `r if (knitr::is_html_output()) jayhawkdown::inc("pre/00-abstract.Rmd")`
 
-`r if (knitr::is_html_output()) "## Acknowledgements {-}"`
+`r if (knitr::is_html_output()) "# Acknowledgements {-}"`
 
 `r if (knitr::is_html_output()) jayhawkdown::inc("pre/00-acknowledge.Rmd")`
