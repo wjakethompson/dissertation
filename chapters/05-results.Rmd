@@ -331,7 +331,139 @@ if (knitr::is_latex_output()) {
 
 ### Description of reduced parameters
 
+Another outcome of interest beyond the recovery of the generated parameters is how often each reduction process resulted in the correct parameters being included in the final model. For example, if an item measured only one attribute, but the Q-matrix specified two attributes, were the additional main effect and interaction term correctly removed? Conversely, if an item did in fact measure two attributes were both main effects and the interaction term correctly retained? Figure \@ref(fig:pvalue-correct-meas) shows the proportion of time the measurement model was correctly reduced, and Figure \@ref(fig:pvalue-correct-strc) shows the proportion of correct reductions for the structural model. 
 
+```{r pvalue-correct-meas, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct measurement model reductions when reducing with p-values", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = correct_meas, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Propostion of Correct Reductions",
+    fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-correct-meas.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-correct-meas.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-correct-meas.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-correct-meas.png")
+}
+```
+
+```{r pvalue-correct-strc, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct structural model reductions when reducing with p-values", fig.pos = "h"}
+p <- rec_results %>%
+  filter(satr_converge == TRUE) %>%
+  ggplot(aes(x = sample_size, y = correct_strc, group = model, fill = model)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  expand_limits(y = c(0, 1)) +
+  labs(x = "Sample Size", y = "Proportion of Correct Reductions",
+    fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-correct-strc.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-correct-strc.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-correct-strc.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-correct-strc.png")
+}
+```
+
+Figure \@ref(fig:pvalue-correct-meas) shows that the only cases where the correct measurement model was obtained was when it was correctly specified, and not parameters were removed (i.e., saturated model or only structural reduction). These results should be interpreted with caution. A "correct" measurement model is defined as all parameters in the final model exactly matching the parameters used to generate the data. This does not account, however, for parameters that may have contributed to the data generation, but not in a significant way. For example, the main effects were drawn from a uniform distribution (0.00, 5.00]. Thus, it is entirely plausible, and expected, for main effects with a value close to zero to be drawn. Thus, these parameters would technically be part of the true measurement model, but may not be statistically significant, and even one of these parameters would result in the determination of an incorrect measurement model.
+
+A similar pattern is seen in Figure \@ref(fig:pvalue-correct-strc), with very low rates of correct reduction, except when no reduction of the structural model was performed (i.e., satuared model or only measurment reduction). Because the data was always generated with a fully saturated log-linear structural model, and reduction of the structural model results in a determination of an incorrect reduction. However, given that the structural parameters were all drawn from a $\mathcal{N}(0, 2)$ distribution the same caveats of significance apply that applied to the measurement model parameters.
+
+To verify that the parameters being reduced are indeed these parameters that are very small, and thus may not be significant, the distributions of estimates and standard errors of the reduced parameters can be examined. Figure \@ref(fig:pvalue-meas-params) shows that the majority of reduced measurement model parameters are small in value, with small standard errors. More parameters were removed from the true Q-matrix conditions than the over specified Q-matrix conditions, however this is an artifact of the over specified conditions converging far less often.
+
+Figure \@ref(fig:pvalue-strc-params) shows a similar pattern for the structural parameters, with the majority of reducted parameters having an estimate close ot zero. Additionally, the most of the reduction occured out of the true Q-matrix conditions, as the over specification conditions often failed to converge. However, unlike the measurement model parameters, there is more variability in the estimates and standard errors of the parameters that were reduced. 
+
+```{r pvalue-meas-params, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Distributions of estimates and standard errors for reduced measurement model parameters when reducing with p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated", !is.na(converge)) %>%
+  select(cond:rm_param) %>%
+  unnest() %>%
+  filter(type != "structural", se != 0) %>%
+  filter(!is.na(se), !is.na(est)) %>%
+  filter(est > -2, se < 5) %>%
+  mutate(
+    est_cat = cut(est, c(seq(-2, 3, by = 1), Inf), right = FALSE,
+      labels = seq(-2, 3, 1)),
+    se_cat = cut(se, c(seq(0, 5, by = 0.5), Inf), right = FALSE,
+      labels = sprintf("%0.1f", seq(0, 5, by = 0.5)))
+  ) %>%
+  group_by(model, over_spec, est_cat, se_cat) %>%
+  summarize(n = n()) %>%
+  ggplot(aes(x = est_cat, y = se_cat)) +
+  facet_grid(model ~ over_spec, scales = "free") +
+  geom_tile(aes(fill = n)) +
+  scale_fill_viridis_c() +
+  labs(x = "Estimate", y = "Standard Error", fill = "Number of Parameters") +
+  theme_bw() +
+  theme(legend.position = "bottom", axis.text = element_text(size = 8),
+    legend.key.width = unit(0.75, "inches"))
+
+ggsave(filename = "pvalue-meas-params.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-meas-params.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-meas-params.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-meas-params.png")
+}
+```
+
+```{r pvalue-strc-params, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Distributions of estimates and standard errors for reduced structural model parameters when reducing with p-values", fig.pos = "h"}
+p <- full_results %>%
+  filter(satr_converge == TRUE, model != "Saturated", !is.na(converge)) %>%
+  select(cond:rm_param) %>%
+  unnest() %>%
+  filter(type == "structural", se != 0) %>%
+  filter(!is.na(se), !is.na(est)) %>%
+  filter(est > -2, se < 5) %>%
+  mutate(
+    est_cat = cut(est, c(seq(-2, 3, by = 1), Inf), right = FALSE,
+      labels = seq(-2, 3, by = 1)),
+    se_cat = cut(se, c(seq(0, 5, by = 0.5), Inf), right = FALSE,
+      labels = sprintf("%0.1f", seq(0, 5, 0.5)))
+  ) %>%
+  group_by(model, over_spec, est_cat, se_cat) %>%
+  summarize(n = n()) %>%
+  ggplot(aes(x = est_cat, y = se_cat)) +
+  facet_grid(model ~ over_spec, scales = "free") +
+  geom_tile(aes(fill = n)) +
+  scale_fill_viridis_c() +
+  labs(x = "Estimate", y = "Standard Error", fill = "Number of Parameters") +
+  theme_bw() +
+  theme(legend.position = "bottom", axis.text = element_text(size = 8),
+    legend.key.width = unit(0.75, "inches"))
+
+ggsave(filename = "pvalue-strc-params.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-strc-params.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-strc-params.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-strc-params.png")
+}
+```
 
 ## Reduction by heuristic {#heur-results}
 
