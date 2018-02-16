@@ -10,7 +10,8 @@ rmd_files: [
 
   "chapters/90-References.Rmd",
   
-  "chapters/91-full-param-recovery.Rmd"
+  "chapters/91-pval-param-recovery.Rmd",
+  "chapters/92-rule-param-recovery.Rmd"
 ]
 download: [
   ["WJThompson_Dissertation.pdf", "PDF"]

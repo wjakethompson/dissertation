@@ -1,12 +1,10 @@
-# (APPENDIX) Appendix {-}
-
-# Parameter Recovery with Reduction from P-values {#app-param-recov}
+# Parameter Recovery with Reduction from Heuristic {#app-rule-recov}
 
 ## Individual Bias
 
-```{r pvalue-icp-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model intercept estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-icp-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model intercept estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = intercept_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -17,21 +15,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-icp-bias.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-icp-bias.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-icp-bias.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-icp-bias.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-icp-bias.pdf")
+  knitr::include_graphics("figure/rule-icp-bias.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-icp-bias.png")
+  knitr::include_graphics("figure/rule-icp-bias.png")
 }
 ```
 
-```{r pvalue-mef-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-mef-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = main_effect_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -42,21 +40,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-mef-bias.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-mef-bias.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-mef-bias.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-mef-bias.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-mef-bias.pdf")
+  knitr::include_graphics("figure/rule-mef-bias.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-mef-bias.png")
+  knitr::include_graphics("figure/rule-mef-bias.png")
 }
 ```
 
-```{r pvalue-int2-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 2-way interaction estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-int2-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 2-way interaction estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = interaction2_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -67,21 +65,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-int2-bias.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int2-bias.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-int2-bias.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int2-bias.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-int2-bias.pdf")
+  knitr::include_graphics("figure/rule-int2-bias.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-int2-bias.png")
+  knitr::include_graphics("figure/rule-int2-bias.png")
 }
 ```
 
-```{r pvalue-int3-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 3-way interaction estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-int3-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 3-way interaction estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = interaction3_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -92,21 +90,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-int3-bias.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int3-bias.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-int3-bias.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int3-bias.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-int3-bias.pdf")
+  knitr::include_graphics("figure/rule-int3-bias.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-int3-bias.png")
+  knitr::include_graphics("figure/rule-int3-bias.png")
 }
 ```
 
-```{r pvalue-int4-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 4-way interaction estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-int4-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model 4-way interaction estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = interaction4_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -117,21 +115,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-int4-bias.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int4-bias.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-int4-bias.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int4-bias.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-int4-bias.pdf")
+  knitr::include_graphics("figure/rule-int4-bias.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-int4-bias.png")
+  knitr::include_graphics("figure/rule-int4-bias.png")
 }
 ```
 
-```{r pvalue-strc-indbias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structural model estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-strc-indbias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structural model estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = structural_bias, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -142,23 +140,23 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-strc-indbias.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-strc-indbias.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-strc-indbias.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-strc-indbias.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-strc-indbias.pdf")
+  knitr::include_graphics("figure/rule-strc-indbias.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-strc-indbias.png")
+  knitr::include_graphics("figure/rule-strc-indbias.png")
 }
 ```
 
 ## Individual Mean Square Error
 
-```{r pvalue-icp-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model intercept estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-icp-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model intercept estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = intercept_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -169,21 +167,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-icp-mse.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-icp-mse.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-icp-mse.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-icp-mse.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-icp-mse.pdf")
+  knitr::include_graphics("figure/rule-icp-mse.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-icp-mse.png")
+  knitr::include_graphics("figure/rule-icp-mse.png")
 }
 ```
 
-```{r pvalue-mef-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-mef-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model main effect estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = main_effect_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -194,21 +192,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-mef-mse.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-mef-mse.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-mef-mse.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-mef-mse.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-mef-mse.pdf")
+  knitr::include_graphics("figure/rule-mef-mse.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-mef-mse.png")
+  knitr::include_graphics("figure/rule-mef-mse.png")
 }
 ```
 
-```{r pvalue-int2-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 2-way interaction estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-int2-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 2-way interaction estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = interaction2_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -219,21 +217,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-int2-mse.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int2-mse.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-int2-mse.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int2-mse.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-int2-mse.pdf")
+  knitr::include_graphics("figure/rule-int2-mse.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-int2-mse.png")
+  knitr::include_graphics("figure/rule-int2-mse.png")
 }
 ```
 
-```{r pvalue-int3-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 3-way interaction estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-int3-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 3-way interaction estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = interaction3_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -244,21 +242,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-int3-mse.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int3-mse.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-int3-mse.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int3-mse.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-int3-mse.pdf")
+  knitr::include_graphics("figure/rule-int3-mse.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-int3-mse.png")
+  knitr::include_graphics("figure/rule-int3-mse.png")
 }
 ```
 
-```{r pvalue-int4-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 4-way interaction estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-int4-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in measurement model 4-way interaction estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = interaction4_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -269,21 +267,21 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-int4-mse.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int4-mse.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-int4-mse.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-int4-mse.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-int4-mse.pdf")
+  knitr::include_graphics("figure/rule-int4-mse.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-int4-mse.png")
+  knitr::include_graphics("figure/rule-int4-mse.png")
 }
 ```
 
-```{r pvalue-strc-indmse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in structural model estimates when reducing using p-values", fig.pos = "h"}
+```{r rule-strc-indmse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "MSE in structural model estimates when reducing using a heuristic", fig.pos = "h"}
 p <- full_results %>%
-  filter(satr_converge == TRUE) %>%
+  filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = structural_mse, group = model, color = model)) +
   facet_grid(over_spec ~ attributes, scales = "free_y") +
   geom_sina(alpha = 0.6, maxwidth = 0.6) +
@@ -294,14 +292,14 @@ p <- full_results %>%
   theme(legend.position = "bottom", panel.grid.major.x = element_blank()) +
   guides(color = guide_legend(override.aes = list(alpha = 1)))
 
-ggsave(filename = "pvalue-strc-indmse.pdf", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-strc-indmse.pdf", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
-ggsave(filename = "pvalue-strc-indmse.png", plot = p, path = "figure", width = 8,
+ggsave(filename = "rule-strc-indmse.png", plot = p, path = "figure", width = 8,
   height = 8, units = "in", dpi = "retina")
 
 if (knitr::is_latex_output()) {
-  knitr::include_graphics("figure/pvalue-strc-indmse.pdf")
+  knitr::include_graphics("figure/rule-strc-indmse.pdf")
 } else {
-  knitr::include_graphics("figure/pvalue-strc-indmse.png")
+  knitr::include_graphics("figure/rule-strc-indmse.png")
 }
 ```
