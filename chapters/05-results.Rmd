@@ -67,6 +67,57 @@ full_results <- full_results %>%
   )
 ```
 
+```{r format-fit}
+fit_results <- full_results %>%
+  select(cond:model, satr_converge, converge, aic, bic, abic) %>%
+  group_by(cond, attributes, sample_size, dataset, over_spec, satr_converge) %>%
+  nest(.key = "fit_data") %>%
+  mutate(
+    aic = map_chr(.x = .data$fit_data, .f = function(x) {
+      if (!any(x$converge, na.rm = TRUE)) return(NA_character_)
+      
+      pick <- x %>%
+        filter(converge) %>%
+        top_n(-1, aic) %>%
+        top_n(1, model) %>%
+        pull(model) %>%
+        as.character()
+      
+      return(pick)
+    }),
+    bic = map_chr(.x = .data$fit_data, .f = function(x) {
+      if (!any(x$converge, na.rm = TRUE)) return(NA_character_)
+      
+      pick <- x %>%
+        filter(converge) %>%
+        top_n(-1, bic) %>%
+        top_n(1, model) %>%
+        pull(model) %>%
+        as.character()
+      
+      return(pick)
+    }),
+    abic = map_chr(.x = .data$fit_data, .f = function(x) {
+      if (!any(x$converge, na.rm = TRUE)) return(NA_character_)
+      
+      pick <- x %>%
+        filter(converge) %>%
+        top_n(-1, abic) %>%
+        top_n(1, model) %>%
+        pull(model) %>%
+        as.character()
+      
+      return(pick)
+    }),
+    aic = factor(aic, levels = c("Saturated", "Simultaneous", "Measurement",
+      "Structural", "Measurement-Structural", "Structural-Measurement")),
+    bic = factor(bic, levels = c("Saturated", "Simultaneous", "Measurement",
+      "Structural", "Measurement-Structural", "Structural-Measurement")),
+    abic = factor(abic, levels = c("Saturated", "Simultaneous", "Measurement",
+      "Structural", "Measurement-Structural", "Structural-Measurement"))
+  ) %>%
+  select(-fit_data)
+```
 
 ### Convergence
 
@@ -96,7 +147,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-### Parameter Recovery
+### Parameter recovery
 
 To evaluate the performance of the reduction processes, the bias and mean square error of the parameter estimates can be examined. The bias represents the difference between the true value and the estimated value. The mean square error represents the average of the squared difference between the true and estimated values. Figure \@ref(fig:pvalue-bias) and Figure \@ref(fig:pvalue-mse) show the total bias and total mean square error, respectively, across all measurement model parameters when reducing using p-values. Because of some outlying data sets, biases with an absolute value greater than 100 and mean square errors with a value greater than 100 have been excluded from the figures. Figures showing all biases and mean square errors, separated by the type of parameter can be seen in Appendix \@ref(app-pval-recov).
 
@@ -220,7 +271,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-### Mastery Classification
+### Mastery classification
 
 Another critical measure of performance is the rate at which respondents are correctly classified as masters of the attributes. This is assessed at two levels: the individual attribute classifications, and the overall profile classification. As described in section \@ref(method-outcome), profile mastery and attribute mastery differentiate between two types of assignments that can occur. For example, a respondent may have a true profile of [1,0,1,0] and an estimated profile of [1,1,1,0]. Here, the overall profile assignment is incorrect (profile classification), but three out of the four individual attributes are correctly classified (attribute classification). Respondents were classified as a master of an attribute if their posterior probability of mastery was greater than or equal to .5, and non-master of the attribute otherwise. Figure \@ref(fig:pvalue-attr-ccr) and Figure \@ref(fig:pvalue-attr-kap) show the attribute level agreement as measured by the average correct classification rate and average Cohen's $\kappa$, respectively.
 
@@ -326,6 +377,94 @@ if (knitr::is_latex_output()) {
   knitr::include_graphics("figure/pvalue-prof-kap.pdf")
 } else {
   knitr::include_graphics("figure/pvalue-prof-kap.png")
+}
+```
+
+### Model fit
+
+Critical to the model selection process is model fit. Although different model reduction processes may all show adequate recovery of item parameters and respondent classification, this measures cannot provide insight as to whether or not the removal of the parameters significantly impacted model fit. Figure \@ref(fig:pvalue-aic), Figure \@ref(fig:pvalue-bic), and Figure \@ref(fig:pvalue-abic) show how many times the AIC, BIC, and aBIC, respectively, selected each model reduction as the preferred model for a given data set.
+
+Figure \@ref(fig:pvalue-aic) shows a strong preference for the saturated model when using the AIC to pick the preferred model. This indicates that the additional parameters in the saturated model provide enough improvement to model fit to justify the additional complexity. However, structural reduction was also selected fairly often, especially in the true Q-matrix conditions. This suggests that the full structural model was often overly complex, and a reduced version provied adequate fit.
+
+```{r pvalue-aic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the AIC when reducing using p-values", fig.pos = "h"}
+p <- fit_results %>%
+  filter(satr_converge == TRUE) %>%
+  group_by(attributes, sample_size, over_spec, aic) %>%
+  summarize(picks = n()) %>%
+  complete(attributes, sample_size, over_spec, aic, fill = list(picks = 0)) %>%
+  ggplot(aes(x = sample_size, y = picks, group = aic, fill = aic)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  labs(x = "Sample Size", y = "AIC Selections", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-aic.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-aic.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-aic.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-aic.png")
+}
+```
+
+The BIC shows very different results (Figure \@ref(fig:pvalue-bic)). When selecting a model based on the BIC, the preferred method was most commonly structural-measurement, followed by measurement-structural reduction. This may be unsurprising, as the penalty for additional parameters is greater in the BIC than the AIC [@wit_all_2012_fix]. Therefore, the BIC is more likely to prefer models with fewer parameters. However, when the Q-matrix is correctly specified, the preference for the saturated model increases as the sample size increases. This indicates that model reduction may be more important when sample sizes are smaller, and it is more difficult to get good parameter estimates.
+
+```{r pvalue-bic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the BIC when reducing using p-values", fig.pos = "h"}
+p <- fit_results %>%
+  filter(satr_converge == TRUE) %>%
+  group_by(attributes, sample_size, over_spec, bic) %>%
+  summarize(picks = n()) %>%
+  complete(attributes, sample_size, over_spec, bic, fill = list(picks = 0)) %>%
+  ggplot(aes(x = sample_size, y = picks, group = bic, fill = bic)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  labs(x = "Sample Size", y = "BIC Selections", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-bic.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-bic.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-bic.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-bic.png")
+}
+```
+
+Finally, results when using the aBIC show a middle ground between the results when using the AIC or BIC (Figure \@ref(fig:pvalue-abic)). There is still a strong preference for the saturated model, however, there is also a stronger preference for the structural-measurement and measurement-structural reductions than what was seen when using the AIC.
+
+```{r pvalue-abic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the aBIC when reducing using p-values", fig.pos = "h"}
+p <- fit_results %>%
+  filter(satr_converge == TRUE) %>%
+  group_by(attributes, sample_size, over_spec, abic) %>%
+  summarize(picks = n()) %>%
+  complete(attributes, sample_size, over_spec, abic, fill = list(picks = 0)) %>%
+  ggplot(aes(x = sample_size, y = picks, group = abic, fill = abic)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  labs(x = "Sample Size", y = "aBIC Selections", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "pvalue-abic.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "pvalue-abic.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/pvalue-abic.pdf")
+} else {
+  knitr::include_graphics("figure/pvalue-abic.png")
 }
 ```
 
@@ -499,7 +638,7 @@ if (knitr::is_latex_output()) {
 
 In contrast to the truly specified Q-matrix conditions, models rarely converged when the Q-matrix was over specified, regardless of reduction process. This was especially true as the complexity and amount of over specification increased. However, across these conditions, simultaneous reductions and measurement model reduction had the most success in getting the model to converge.
 
-### Parameter Recovery
+### Parameter recovery
 
 As with the reduction process that relied entirely on p-values, the bias and mean square error of the parameter estimates can be examined for models that used the heuristic as the first reduction step. Figure \@ref(fig:rule-bias) and Figure \@ref(fig:rule-mse) show the total bias and total mean square error, respectively, across all measurement model parameters when reducing using p-values. As with the Because of some outlying data sets, biases with an absolute value greater than 100 and mean square errors with a value greater than 100 have been excluded from the figures. Figures showing all biases and mean square errors, separated by the type of parameter can be seen in Appendix \@ref(app-rule-recov).
 
@@ -623,7 +762,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-### Mastery Classification
+### Mastery classification
 
 Just as with reduction based on p-values, it is important to evaluate mastery classification (at the attribute and profile level) when the initial reduction step is based on a heuristic. Figure \@ref(fig:rule-attr-ccr) and Figure \@ref(fig:rule-attr-kap) show the attribute level agreement as measured by the average correct classification rate and average Cohen's $\kappa$, respectively.
 
@@ -729,6 +868,95 @@ if (knitr::is_latex_output()) {
   knitr::include_graphics("figure/rule-prof-kap.pdf")
 } else {
   knitr::include_graphics("figure/rule-prof-kap.png")
+}
+```
+
+### Model fit
+
+Just as when the saturated model converged, it is important to assess model fit when the saturated model fails to converge, and the model reduction process uses a heuristic to remove parameters. Figure \@ref(fig:rule-aic) shows the results when using the AIC to select the preferred model. When the Q-matrix is correclty specified, there is a strong preference for structural reduction over structural-measurement redcution. In contrast, when the Q-matrix is over specified, there is a stronger preference for simultaneous reduction of structural and measurement models. This preference is stronger as the amount of over specification increases.
+
+```{r rule-aic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the AIC when reducing using a heuristic", fig.pos = "h"}
+p <- fit_results %>%
+  filter(satr_converge == FALSE) %>%
+  group_by(attributes, sample_size, over_spec, aic) %>%
+  summarize(picks = n()) %>%
+  complete(attributes, sample_size, over_spec, aic, fill = list(picks = 0)) %>%
+  filter(!is.na(aic)) %>%
+  ggplot(aes(x = sample_size, y = picks, group = aic, fill = aic)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  labs(x = "Sample Size", y = "AIC Selections", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "rule-aic.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "rule-aic.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/rule-aic.pdf")
+} else {
+  knitr::include_graphics("figure/rule-aic.png")
+}
+```
+
+The BIC shows results similar to those seen when reduction depends only on p-values. There is a much stronger preference for structural-measurement and measurement-structural reduction than when using AIC. However, the difference is not as pronounced as with p-value only reduction, as simultaneous reduction is still preferred overall. Further, just as with the AIC, the preference for measurement reduction increases as the amount of over specification increases.
+
+```{r rule-bic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the BIC when reducing using a heuristic", fig.pos = "h"}
+p <- fit_results %>%
+  filter(satr_converge == FALSE) %>%
+  group_by(attributes, sample_size, over_spec, bic) %>%
+  summarize(picks = n()) %>%
+  complete(attributes, sample_size, over_spec, bic, fill = list(picks = 0)) %>%
+  filter(!is.na(bic)) %>%
+  ggplot(aes(x = sample_size, y = picks, group = bic, fill = bic)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  labs(x = "Sample Size", y = "BIC Selections", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "rule-bic.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "rule-bic.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/rule-bic.pdf")
+} else {
+  knitr::include_graphics("figure/rule-bic.png")
+}
+```
+
+The model selection when using the aBIC is also reflective of the results found when using only p-values. That is, the aBIC serves as a middle ground between the AIC and the BIC. There is a stronger preference for the structural-measurement and measurement-structural reduction processes than when using the AIC, but not as strong when using the BIC. Additionally, there is a stronger preference for measurement model reduction as the amount of over specification in the Q-matrix increases.
+
+```{r rule-abic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the aBIC when reducing using a heuristic", fig.pos = "h"}
+p <- fit_results %>%
+  filter(satr_converge == FALSE) %>%
+  group_by(attributes, sample_size, over_spec, abic) %>%
+  summarize(picks = n()) %>%
+  complete(attributes, sample_size, over_spec, abic, fill = list(picks = 0)) %>%
+  filter(!is.na(abic)) %>%
+  ggplot(aes(x = sample_size, y = picks, group = abic, fill = abic)) +
+  facet_grid(over_spec ~ attributes) +
+  geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
+  scale_fill_OkabeIto() +
+  labs(x = "Sample Size", y = "aBIC Selections", fill = "Reduction\nProcess") +
+  theme_bw() +
+  theme(legend.position = "bottom", panel.grid.major.x = element_blank())
+
+ggsave(filename = "rule-abic.pdf", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+ggsave(filename = "rule-abic.png", plot = p, path = "figure", width = 8,
+  height = 8, units = "in", dpi = "retina")
+
+if (knitr::is_latex_output()) {
+  knitr::include_graphics("figure/rule-abic.pdf")
+} else {
+  knitr::include_graphics("figure/rule-abic.png")
 }
 ```
 
