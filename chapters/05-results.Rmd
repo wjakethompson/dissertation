@@ -902,7 +902,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-The BIC shows results similar to those seen when reduction depends only on p-values. There is a much stronger preference for structural-measurement and measurement-structural reduction than when using AIC. However, the difference is not as pronounced as with p-value only reduction, as simultaneous reduction is still preferred overall. Further, just as with the AIC, the preference for measurement reduction increases as the amount of over specification increases.
+The BIC results in Figure \@ref(fig:rule-bic) are similar to those seen when reduction depends only on p-values. There is a much stronger preference for structural-measurement and measurement-structural reduction than when using AIC. However, the difference is not as pronounced as with p-value only reduction, as simultaneous reduction is still preferred overall. Further, just as with the AIC, the preference for measurement reduction increases as the amount of over specification increases.
 
 ```{r rule-bic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the BIC when reducing using a heuristic", fig.pos = "h"}
 p <- fit_results %>%
@@ -931,7 +931,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-The model selection when using the aBIC is also reflective of the results found when using only p-values. That is, the aBIC serves as a middle ground between the AIC and the BIC. There is a stronger preference for the structural-measurement and measurement-structural reduction processes than when using the AIC, but not as strong when using the BIC. Additionally, there is a stronger preference for measurement model reduction as the amount of over specification in the Q-matrix increases.
+The model selection when using the aBIC is also reflective of the results found when using only p-values (Figure \@ref(fig:rule-abic)). That is, the aBIC serves as a middle ground between the AIC and the BIC. There is a stronger preference for the structural-measurement and measurement-structural reduction processes than when using the AIC, but not as strong when using the BIC. Additionally, there is a stronger preference for measurement model reduction as the amount of over specification in the Q-matrix increases.
 
 ```{r rule-abic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the aBIC when reducing using a heuristic", fig.pos = "h"}
 p <- fit_results %>%
