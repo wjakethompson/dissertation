@@ -49,8 +49,8 @@ acknowledgements: >
 
 ```{r setup, include = FALSE}
 needed_packages <- c("tidyverse", "kableExtra", "MplusAutomation", "forcats",
-  "portableParallelSeeds", "stringr", "colorblindr", "hrbrthemes", "glue",
-  "lubridate", "tidyselect", "ggforce")
+  "portableParallelSeeds", "stringr", "colorblindr", "glue", "lubridate",
+  "tidyselect", "ggforce")
 load_packages <- function(x) {
   if (!(x %in% rownames(installed.packages()))) {
     install.packages(x)
