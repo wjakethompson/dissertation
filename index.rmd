@@ -71,6 +71,7 @@ knitr::opts_chunk$set(
   fig.path = "figure/",
   fig.align = "center",
   out.width = "80%",
+  out.extra = "",
   dpi = 2000,
   dev = "cairo_pdf"
 )
