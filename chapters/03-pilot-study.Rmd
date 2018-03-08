@@ -15,7 +15,7 @@ The DTMR assessment consists of 28 dichotomously scored items that together meas
 
 Of the 28 items, Referent Units is measured by 16, Partitioning and Iterating by 10, Appropriateness by 6, and Multiplicative Comparison by 10. This totals adds to more than 28 because several items measure more than one attribute. Specifically, there are 14 items measuring only 1 attribute and 14 that measure 2 attributes. The complete saturated Q-matrix for the DTMR assessment can be see in Table \@ref(tab:dtmr-qmatrix). For example, item 1 measures only the Referent Units attribute, whereas item 5 measures both the Referent Units and Multiplicative Comparison attributes.
 
-```{r dtmr-qmatrix, cache = TRUE}
+```{r dtmr-qmatrix}
 read_csv("data/dtmr-qmatrix.csv", col_types = cols(.default = col_number(),
   Item = col_character())) %>%
   rowid_to_column() %>%
@@ -23,12 +23,6 @@ read_csv("data/dtmr-qmatrix.csv", col_types = cols(.default = col_number(),
   knitr::kable(align = "c", booktabs = TRUE, caption = "DTMR Q-matrix",
     format = knit_format) %>%
   kableExtra::kable_styling(latex_options = "hold_position")
-```
-
-```{r dtmr-data, cache = TRUE, eval = FALSE}
-dtmr_data <- read_csv("data/dtmr-data.csv", na = ".", col_names = c("id",
-  paste0("X", seq_len(28)), "MCred", "ExpGd", "GdCert79", "GdCert78"),
-  col_types = cols(.default = col_integer()))
 ```
 
 In total 990 math teachers took the assessment. @bradshaw_diagnosing_2014 reported that sample demographics were consistent with a representative national sample. For a complete description of the sample characteristics and data collection process, see the original description of the DTMR in @bradshaw_diagnosing_2014.

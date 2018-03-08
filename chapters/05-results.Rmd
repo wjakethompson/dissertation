@@ -123,7 +123,7 @@ fit_results <- full_results %>%
 
 When saturated model converged, reduction of measurement and structural parameters proceeded by using p-values to determine which parameters to reduce. Figure \@ref(fig:pvalue-converge) shows the convergence rates for these reduction processes when the saturated model converged. Recall that measurement-structural and structural measurement reduction only occurred if the measurement and structural reductions, respectively, converged. Across all conditions, reduction processes where there measurement model was reduced first (i.e., simultaneous, measurement, and measurement-structural) tended to have higher convergence rates. This was most notable when the Q-matrix was over specified. In the most extreme case, the four-attribute condition with a 20 percent over specified Q-matrix, no reductions converged if the measurement model was not part of the initial reduction. However, because the saturated model very rarely converged for this condition (Table \@ref(tab:satr-converge)), the sample size is very limited.
 
-```{r pvalue-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using p-values", fig.pos = "h"}
+```{r pvalue-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using p-values", fig.pos = "H"}
 p <- rec_results %>% 
   filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = converge, group = model, fill = model)) +
@@ -151,7 +151,7 @@ if (knitr::is_latex_output()) {
 
 To evaluate the performance of the reduction processes, the bias and mean square error of the parameter estimates can be examined. The bias represents the difference between the true value and the estimated value. The mean square error represents the average of the squared difference between the true and estimated values. Figure \@ref(fig:pvalue-bias) and Figure \@ref(fig:pvalue-mse) show the total bias and total mean square error, respectively, across all measurement model parameters when reducing using p-values. Because of some outlying data sets, biases with an absolute value greater than 100 and mean square errors with a value greater than 100 have been excluded from the figures. Figures showing all biases and mean square errors, separated by the type of parameter can be seen in Appendix \@ref(app-pval-recov).
 
-```{r pvalue-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+```{r pvalue-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using p-values", fig.pos = "H"}
 p <- rec_results %>% 
   filter(satr_converge == TRUE) %>%
   mutate(
@@ -183,7 +183,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r pvalue-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in measurement model main effect estimates when reducing using p-values", fig.pos = "h"}
+```{r pvalue-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in measurement model main effect estimates when reducing using p-values", fig.pos = "H"}
 p <- rec_results %>% 
   filter(satr_converge == TRUE) %>%
   mutate(
@@ -219,7 +219,7 @@ Figure \@ref(fig:pvalue-bias) shows that across all conditions there is relative
 
 Figure \@ref(fig:pvalue-strc-bias) and Figure \@ref(fig:pvalue-strc-mse) show the bias and mean square error of the structural parameters respectively. Overall, there is very little bias and mean squared error in the structural parameters. The instances where larger bias and mean squared error are indicated (e.g., measurement reduction of a four attribute model with a 20% over specified Q-matrix) are instances where very few of the model actually converged. Thus, these values are based on only a few replications. Thus, these results suggests that given model convergence, the structural parameters are usually well estimated regardless of model reduction method.
 
-```{r pvalue-strc-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structrual model parameter estimates when reducing using p-values", fig.pos = "h"}
+```{r pvalue-strc-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structrual model parameter estimates when reducing using p-values", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   mutate(structural_bias = case_when(structural_bias <= 100 ~ structural_bias,
@@ -245,7 +245,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r pvalue-strc-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in structrual model parameter estimates when reducing using p-values", fig.pos = "h"}
+```{r pvalue-strc-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in structrual model parameter estimates when reducing using p-values", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   mutate(structural_mse = case_when(structural_mse <= 100 ~ structural_mse,
@@ -279,7 +279,7 @@ Another critical measure of performance is the rate at which respondents are cor
 
 (ref:pvalue-kap-prof) Average Cohen's $\kappa$ of profile assignment when reducing using p-values
 
-```{r pvalue-attr-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of attribute mastery when reducing using p-values", fig.pos = "h"}
+```{r pvalue-attr-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of attribute mastery when reducing using p-values", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = attribute_ccr, group = model, fill = model)) +
@@ -303,7 +303,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r pvalue-attr-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:pvalue-kap-attr)", fig.pos = "h"}
+```{r pvalue-attr-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:pvalue-kap-attr)", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = attribute_kappa, group = model, fill = model)) +
@@ -331,7 +331,7 @@ Across all conditions, both the correct classification rate and Cohen's $\kappa$
 
 The overall profile classification shows a similar pattern. Figure \@ref(fig:pvalue-prof-ccr) and Figure \@ref(fig:pvalue-prof-kap) show the correct classification rate and Cohen's $\kappa$ of the overall profiles. As expected, the overall profile agreement is consistently lower than the attribute level mastery classification agreement, although the classification agreement is generally consistent across all model reduction processes. Additionally, as with the attribute classifications, profile classification agreement was lower in the four-attribute, 500 sample size conditions.
 
-```{r pvalue-prof-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of profile assignment when reducing using p-values", fig.pos = "h"}
+```{r pvalue-prof-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of profile assignment when reducing using p-values", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = profile_ccr, group = model, fill = model)) +
@@ -355,7 +355,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r pvalue-prof-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:pvalue-kap-prof)", fig.pos = "h"}
+```{r pvalue-prof-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:pvalue-kap-prof)", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = profile_kappa, group = model, fill = model)) +
@@ -382,11 +382,11 @@ if (knitr::is_latex_output()) {
 
 ### Model fit
 
-Critical to the model selection process is model fit. Although different model reduction processes may all show adequate recovery of item parameters and respondent classification, this measures cannot provide insight as to whether or not the removal of the parameters significantly impacted model fit. Figure \@ref(fig:pvalue-aic), Figure \@ref(fig:pvalue-bic), and Figure \@ref(fig:pvalue-abic) show how many times the AIC, BIC, and aBIC, respectively, selected each model reduction as the preferred model for a given data set.
+Critical to the model selection process is model fit. Although different model reduction processes may all show adequate recovery of item parameters and respondent classification, these measures cannot provide insight as to whether or not the removal of the parameters significantly impacted model fit. Figure \@ref(fig:pvalue-aic), Figure \@ref(fig:pvalue-bic), and Figure \@ref(fig:pvalue-abic) show how many times the AIC, BIC, and adjusted BIC, respectively, selected each model reduction as the preferred model for a given data set.
 
 Figure \@ref(fig:pvalue-aic) shows a strong preference for the saturated model when using the AIC to pick the preferred model. This indicates that the additional parameters in the saturated model provide enough improvement to model fit to justify the additional complexity. However, structural reduction was also selected fairly often, especially in the true Q-matrix conditions. This suggests that the full structural model was often overly complex, and a reduced version provied adequate fit.
 
-```{r pvalue-aic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the AIC when reducing using p-values", fig.pos = "h"}
+```{r pvalue-aic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the AIC when reducing using p-values", fig.pos = "H"}
 p <- fit_results %>%
   filter(satr_converge == TRUE) %>%
   group_by(attributes, sample_size, over_spec, aic) %>%
@@ -414,7 +414,7 @@ if (knitr::is_latex_output()) {
 
 The BIC shows very different results (Figure \@ref(fig:pvalue-bic)). When selecting a model based on the BIC, the preferred method was most commonly structural-measurement, followed by measurement-structural reduction. This may be unsurprising, as the penalty for additional parameters is greater in the BIC than the AIC [@wit_all_2012_fix]. Therefore, the BIC is more likely to prefer models with fewer parameters. However, when the Q-matrix is correctly specified, the preference for the saturated model increases as the sample size increases. This indicates that model reduction may be more important when sample sizes are smaller, and it is more difficult to get good parameter estimates.
 
-```{r pvalue-bic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the BIC when reducing using p-values", fig.pos = "h"}
+```{r pvalue-bic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the BIC when reducing using p-values", fig.pos = "H"}
 p <- fit_results %>%
   filter(satr_converge == TRUE) %>%
   group_by(attributes, sample_size, over_spec, bic) %>%
@@ -440,9 +440,9 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-Finally, results when using the aBIC show a middle ground between the results when using the AIC or BIC (Figure \@ref(fig:pvalue-abic)). There is still a strong preference for the saturated model, however, there is also a stronger preference for the structural-measurement and measurement-structural reductions than what was seen when using the AIC.
+Finally, results when using the adjusted BIC show a middle ground between the results when using the AIC or BIC (Figure \@ref(fig:pvalue-abic)). There is still a strong preference for the saturated model, however, there is also a stronger preference for the structural-measurement and measurement-structural reductions than what was seen when using the AIC.
 
-```{r pvalue-abic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the aBIC when reducing using p-values", fig.pos = "h"}
+```{r pvalue-abic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the adjusted BIC when reducing using p-values", fig.pos = "H"}
 p <- fit_results %>%
   filter(satr_converge == TRUE) %>%
   group_by(attributes, sample_size, over_spec, abic) %>%
@@ -452,7 +452,7 @@ p <- fit_results %>%
   facet_grid(over_spec ~ attributes) +
   geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
   scale_fill_OkabeIto() +
-  labs(x = "Sample Size", y = "aBIC Selections", fill = "Reduction\nProcess") +
+  labs(x = "Sample Size", y = "Adjusted BIC Selections", fill = "Reduction\nProcess") +
   theme_bw() +
   theme(legend.position = "bottom", panel.grid.major.x = element_blank())
 
@@ -472,7 +472,7 @@ if (knitr::is_latex_output()) {
 
 Another outcome of interest beyond the recovery of the generated parameters is how often each reduction process resulted in the correct parameters being included in the final model. For example, if an item measured only one attribute, but the Q-matrix specified two attributes, were the additional main effect and interaction term correctly removed? Conversely, if an item did in fact measure two attributes were both main effects and the interaction term correctly retained? Figure \@ref(fig:pvalue-correct-meas) shows the proportion of time the measurement model was correctly reduced, and Figure \@ref(fig:pvalue-correct-strc) shows the proportion of correct reductions for the structural model. 
 
-```{r pvalue-correct-meas, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct measurement model reductions when reducing with p-values", fig.pos = "h"}
+```{r pvalue-correct-meas, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct measurement model reductions when reducing with p-values", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = correct_meas, group = model, fill = model)) +
@@ -497,7 +497,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r pvalue-correct-strc, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct structural model reductions when reducing with p-values", fig.pos = "h"}
+```{r pvalue-correct-strc, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct structural model reductions when reducing with p-values", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == TRUE) %>%
   ggplot(aes(x = sample_size, y = correct_strc, group = model, fill = model)) +
@@ -530,7 +530,7 @@ To verify that the parameters being reduced are indeed these parameters that are
 
 Figure \@ref(fig:pvalue-strc-params) shows a similar pattern for the structural parameters, with the majority of reduced parameters having an estimate close to zero. Additionally, the most of the reduction occurred out of the true Q-matrix conditions, as the over specification conditions often failed to converge. However, unlike the measurement model parameters, there is more variability in the estimates and standard errors of the parameters that were reduced. 
 
-```{r pvalue-meas-params, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Distributions of estimates and standard errors for reduced measurement model parameters when reducing with p-values", fig.pos = "h"}
+```{r pvalue-meas-params, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Distributions of estimates and standard errors for reduced measurement model parameters when reducing with p-values", fig.pos = "H"}
 p <- full_results %>%
   filter(satr_converge == TRUE, model != "Saturated", !is.na(converge)) %>%
   select(cond:rm_param) %>%
@@ -567,7 +567,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r pvalue-strc-params, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Distributions of estimates and standard errors for reduced structural model parameters when reducing with p-values", fig.pos = "h"}
+```{r pvalue-strc-params, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Distributions of estimates and standard errors for reduced structural model parameters when reducing with p-values", fig.pos = "H"}
 p <- full_results %>%
   filter(satr_converge == TRUE, model != "Saturated", !is.na(converge)) %>%
   select(cond:rm_param) %>%
@@ -612,7 +612,7 @@ When the saturated model failed to converge, high level interaction parameters (
 
 Figure \@ref(fig:rule-converge) shows the convergence rates for these reduction processes when the saturated model failed to converge. Recall that measurement-structural and structural measurement reduction only occurred if the measurement and structural reductions using the heuristic, respectively, converged. When the Q-matrix is correctly specified, reduction of the structural model led to convergence the majority of the time. Conversely, the removal of three- and four-way interactions in the measurement model never led to convergence, unless the structural was being reduced simultaneously. The measurement model was able to be reduced by p-values, but only after higher order interactions had been reduced from the structural model.
 
-```{r rule-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using a heuristic", fig.pos = "h"}
+```{r rule-converge, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Convergence rates when reducing using a heuristic", fig.pos = "H"}
 p <- rec_results %>% 
   filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = converge, group = model, fill = model)) +
@@ -642,7 +642,7 @@ In contrast to the truly specified Q-matrix conditions, models rarely converged 
 
 As with the reduction process that relied entirely on p-values, the bias and mean square error of the parameter estimates can be examined for models that used the heuristic as the first reduction step. Figure \@ref(fig:rule-bias) and Figure \@ref(fig:rule-mse) show the total bias and total mean square error, respectively, across all measurement model parameters when reducing using p-values. As with the Because of some outlying data sets, biases with an absolute value greater than 100 and mean square errors with a value greater than 100 have been excluded from the figures. Figures showing all biases and mean square errors, separated by the type of parameter can be seen in Appendix \@ref(app-rule-recov).
 
-```{r rule-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using a heuristic", fig.pos = "h"}
+```{r rule-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in measurement model main effect estimates when reducing using a heuristic", fig.pos = "H"}
 p <- rec_results %>% 
   filter(satr_converge == FALSE) %>%
   mutate(
@@ -674,7 +674,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r rule-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in measurement model main effect estimates when reducing using a heuristic", fig.pos = "h"}
+```{r rule-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in measurement model main effect estimates when reducing using a heuristic", fig.pos = "H"}
 p <- rec_results %>% 
   filter(satr_converge == FALSE) %>%
   mutate(
@@ -710,7 +710,7 @@ Figure \@ref(fig:rule-bias) shows that across all conditions, as with p-value ba
 
 Figure \@ref(fig:rule-strc-bias) and Figure \@ref(fig:rule-strc-mse) show the bias and mean square error of the structural parameters respectively. Overall, there is very little bias and mean squared error in the structural parameters. The instances where larger bias and mean squared error are indicated (e.g., 10 and 20 percent over specified Q-matrix) are instances where very few of the model actually converged. Thus, these values are based on only a few replications. Thus, these results suggests that, as with p-value only reduction, the structural parameters are usually well estimated regardless of model reduction method.
 
-```{r rule-strc-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structrual model parameter estimates when reducing using a heuristic", fig.pos = "h"}
+```{r rule-strc-bias, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Bias in structrual model parameter estimates when reducing using a heuristic", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   mutate(structural_bias = case_when(structural_bias <= 100 ~ structural_bias,
@@ -736,7 +736,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r rule-strc-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in structrual model parameter estimates when reducing using a heuristic", fig.pos = "h"}
+```{r rule-strc-mse, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Mean square error in structrual model parameter estimates when reducing using a heuristic", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   mutate(structural_mse = case_when(structural_mse <= 100 ~ structural_mse,
@@ -770,7 +770,7 @@ Just as with reduction based on p-values, it is important to evaluate mastery cl
 
 (ref:rule-kap-prof) Average Cohen's $\kappa$ of profile assignment when reducing using a heuristic
 
-```{r rule-attr-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of attribute mastery when reducing using a heuristic", fig.pos = "h"}
+```{r rule-attr-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of attribute mastery when reducing using a heuristic", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = attribute_ccr, group = model, fill = model)) +
@@ -794,7 +794,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r rule-attr-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:rule-kap-attr)", fig.pos = "h"}
+```{r rule-attr-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:rule-kap-attr)", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = attribute_kappa, group = model, fill = model)) +
@@ -822,7 +822,7 @@ Across all conditions, both the correct classification rate and Cohen's $\kappa$
 
 The overall profile classification shows also shows pattern similar to the p-value only reduction (Figure \@ref(fig:rule-prof-ccr) and Figure \@ref(fig:rule-prof-kap)). The overall profile agreement is consistently lower than the mastery classification at the attribute but, but the profile agreement is generally consistent across all model reduction processes.
 
-```{r rule-prof-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of profile assignment when reducing using a heuristic", fig.pos = "h"}
+```{r rule-prof-ccr, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Average correct classification rate of profile assignment when reducing using a heuristic", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = profile_ccr, group = model, fill = model)) +
@@ -846,7 +846,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r rule-prof-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:rule-kap-prof)", fig.pos = "h"}
+```{r rule-prof-kap, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "(ref:rule-kap-prof)", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   ggplot(aes(x = sample_size, y = profile_kappa, group = model, fill = model)) +
@@ -873,9 +873,9 @@ if (knitr::is_latex_output()) {
 
 ### Model fit
 
-Just as when the saturated model converged, it is important to assess model fit when the saturated model fails to converge, and the model reduction process uses a heuristic to remove parameters. Figure \@ref(fig:rule-aic) shows the results when using the AIC to select the preferred model. When the Q-matrix is correclty specified, there is a strong preference for structural reduction over structural-measurement redcution. In contrast, when the Q-matrix is over specified, there is a stronger preference for simultaneous reduction of structural and measurement models. This preference is stronger as the amount of over specification increases.
+When the saturated model fails to converge and the model reduction process uses a heuristic to remove parameters, it is still important to assess model fit. Figure \@ref(fig:rule-aic) shows the results when using the AIC to select the preferred model. When the Q-matrix is correclty specified, there is a strong preference for structural reduction over structural-measurement redcution. In contrast, when the Q-matrix is over specified, there is a stronger preference for simultaneous reduction of structural and measurement models. This preference is stronger as the amount of over specification increases.
 
-```{r rule-aic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the AIC when reducing using a heuristic", fig.pos = "h"}
+```{r rule-aic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the AIC when reducing using a heuristic", fig.pos = "H"}
 p <- fit_results %>%
   filter(satr_converge == FALSE) %>%
   group_by(attributes, sample_size, over_spec, aic) %>%
@@ -904,7 +904,7 @@ if (knitr::is_latex_output()) {
 
 The BIC results in Figure \@ref(fig:rule-bic) are similar to those seen when reduction depends only on p-values. There is a much stronger preference for structural-measurement and measurement-structural reduction than when using AIC. However, the difference is not as pronounced as with p-value only reduction, as simultaneous reduction is still preferred overall. Further, just as with the AIC, the preference for measurement reduction increases as the amount of over specification increases.
 
-```{r rule-bic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the BIC when reducing using a heuristic", fig.pos = "h"}
+```{r rule-bic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the BIC when reducing using a heuristic", fig.pos = "H"}
 p <- fit_results %>%
   filter(satr_converge == FALSE) %>%
   group_by(attributes, sample_size, over_spec, bic) %>%
@@ -931,9 +931,9 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-The model selection when using the aBIC is also reflective of the results found when using only p-values (Figure \@ref(fig:rule-abic)). That is, the aBIC serves as a middle ground between the AIC and the BIC. There is a stronger preference for the structural-measurement and measurement-structural reduction processes than when using the AIC, but not as strong when using the BIC. Additionally, there is a stronger preference for measurement model reduction as the amount of over specification in the Q-matrix increases.
+The model selection when using the adjusted BIC is also reflective of the results found when using only p-values (Figure \@ref(fig:rule-abic)). That is, the adjusted BIC serves as a middle ground between the AIC and the BIC. There is a stronger preference for the structural-measurement and measurement-structural reduction processes than when using the AIC, but not as strong when using the BIC. Additionally, there is a stronger preference for measurement model reduction as the amount of over specification in the Q-matrix increases.
 
-```{r rule-abic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the aBIC when reducing using a heuristic", fig.pos = "h"}
+```{r rule-abic, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Number of selections as best fitting model as measured by the adjusted BIC when reducing using a heuristic", fig.pos = "H"}
 p <- fit_results %>%
   filter(satr_converge == FALSE) %>%
   group_by(attributes, sample_size, over_spec, abic) %>%
@@ -944,7 +944,7 @@ p <- fit_results %>%
   facet_grid(over_spec ~ attributes) +
   geom_col(width = 0.7, position = position_dodge(width = 0.7)) +
   scale_fill_OkabeIto() +
-  labs(x = "Sample Size", y = "aBIC Selections", fill = "Reduction\nProcess") +
+  labs(x = "Sample Size", y = "Adjusted BIC Selections", fill = "Reduction\nProcess") +
   theme_bw() +
   theme(legend.position = "bottom", panel.grid.major.x = element_blank())
 
@@ -964,7 +964,7 @@ if (knitr::is_latex_output()) {
 
 Finally, the performance of the different processes in terms of correctly specifying the parameters to be included can be examined. Figure \@ref(fig:rule-correct-meas) shows the proportion of time the measurement model was correctly reduced, and Figure \@ref(fig:rule-correct-strc) shows the proportion of correct reductions for the structural model. 
 
-```{r rule-correct-meas, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct measurement model reductions when reducing with a heuristic", fig.pos = "h"}
+```{r rule-correct-meas, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct measurement model reductions when reducing with a heuristic", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   mutate(correct_meas = case_when(
@@ -994,7 +994,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r rule-correct-strc, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct structural model reductions when reducing with a heuristic", fig.pos = "h"}
+```{r rule-correct-strc, fig.width = 8, fig.height = 8, out.width = "90%", fig.cap = "Proportion of correct structural model reductions when reducing with a heuristic", fig.pos = "H"}
 p <- rec_results %>%
   filter(satr_converge == FALSE) %>%
   mutate(correct_strc = case_when(
